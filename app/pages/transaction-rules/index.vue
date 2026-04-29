@@ -1,22 +1,22 @@
 <script setup lang="ts">
 import {
-  fetchSparkasseRules,
-  createSparkasseRule,
-  updateSparkasseRule,
-  deleteSparkasseRule
-} from '~/services/sparkasseRuleService'
+  fetchTransactionRules,
+  createTransactionRule,
+  updateTransactionRule,
+  deleteTransactionRule
+} from '~/services/transactionRuleService'
 import { fetchCategories } from '~/services/categoryService'
-import type { SparkasseRule, SparkasseRuleRequest, UserCategory } from '~/types/transaction'
+import type { TransactionRule, TransactionRuleRequest, UserCategory } from '~/types/transaction'
 
 definePageMeta({ layout: 'dashboard' })
-useSeoMeta({ title: 'Sparkasse Rules — Financials Tracker' })
+useSeoMeta({ title: 'Transaction Rules — Financials Tracker' })
 
 const toast = useToast()
-const rules = ref<SparkasseRule[]>([])
+const rules = ref<TransactionRule[]>([])
 const categories = ref<UserCategory[]>([])
 const loading = ref(false)
 const showModal = ref(false)
-const editingRule = ref<SparkasseRule | null>(null)
+const editingRule = ref<TransactionRule | null>(null)
 const saving = ref(false)
 
 const targetFieldOptions = [
@@ -26,7 +26,7 @@ const targetFieldOptions = [
   { label: 'Both', value: 'BOTH' }
 ]
 
-const form = reactive<SparkasseRuleRequest>({
+const form = reactive<TransactionRuleRequest>({
   pattern: '',
   targetField: 'BOTH',
   userCategoryId: 0,
@@ -40,7 +40,7 @@ const categoryOptions = computed(() =>
 async function load() {
   loading.value = true
   try {
-    [rules.value, categories.value] = await Promise.all([fetchSparkasseRules(), fetchCategories()])
+    [rules.value, categories.value] = await Promise.all([fetchTransactionRules(), fetchCategories()])
   } finally {
     loading.value = false
   }
@@ -55,7 +55,7 @@ function openCreate() {
   showModal.value = true
 }
 
-function openEdit(rule: SparkasseRule) {
+function openEdit(rule: TransactionRule) {
   editingRule.value = rule
   form.pattern = rule.pattern
   form.targetField = rule.targetField
@@ -68,12 +68,12 @@ async function handleSave() {
   saving.value = true
   try {
     if (editingRule.value) {
-      const updated = await updateSparkasseRule(editingRule.value.id, { ...form })
+      const updated = await updateTransactionRule(editingRule.value.id, { ...form })
       const idx = rules.value.findIndex(r => r.id === updated.id)
       if (idx !== -1) rules.value[idx] = updated
       toast.add({ title: 'Rule updated', color: 'success', icon: 'i-lucide-check' })
     } else {
-      const created = await createSparkasseRule({ ...form })
+      const created = await createTransactionRule({ ...form })
       rules.value.push(created)
       rules.value.sort((a, b) => a.priority - b.priority || a.id - b.id)
       toast.add({ title: 'Rule created', color: 'success', icon: 'i-lucide-check' })
@@ -86,9 +86,9 @@ async function handleSave() {
   }
 }
 
-async function handleDelete(rule: SparkasseRule) {
+async function handleDelete(rule: TransactionRule) {
   try {
-    await deleteSparkasseRule(rule.id)
+    await deleteTransactionRule(rule.id)
     rules.value = rules.value.filter(r => r.id !== rule.id)
     toast.add({ title: 'Rule deleted', color: 'success', icon: 'i-lucide-check' })
   } catch (err) {
@@ -102,7 +102,7 @@ onMounted(load)
 <template>
   <UDashboardPanel>
     <template #header>
-      <UDashboardNavbar title="Sparkasse Rules">
+      <UDashboardNavbar title="Transaction Rules">
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>
@@ -188,7 +188,7 @@ onMounted(load)
 
   <UModal
     v-model:open="showModal"
-    :title="editingRule ? 'Edit Rule' : 'New Sparkasse Rule'"
+    :title="editingRule ? 'Edit Rule' : 'New Transaction Rule'"
   >
     <template #body>
       <div class="flex flex-col gap-4">

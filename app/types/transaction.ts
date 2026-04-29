@@ -30,7 +30,7 @@ export interface MerchantAliasRequest {
   canonicalName: string
 }
 
-export interface SparkasseRule {
+export interface TransactionRule {
   id: number
   pattern: string
   targetField: 'PARTNER_NAME' | 'COUNTERPARTY_NAME' | 'REFERENCE' | 'BOTH'
@@ -40,7 +40,7 @@ export interface SparkasseRule {
   updatedAt: string
 }
 
-export interface SparkasseRuleRequest {
+export interface TransactionRuleRequest {
   pattern: string
   targetField: 'PARTNER_NAME' | 'COUNTERPARTY_NAME' | 'REFERENCE' | 'BOTH'
   userCategoryId: number

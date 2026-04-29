@@ -39,9 +39,9 @@ const navMain: NavigationMenuItem[] = [
     to: '/merchant-aliases'
   },
   {
-    label: 'Sparkasse Rules',
+    label: 'Transaction Rules',
     icon: 'i-lucide-filter',
-    to: '/sparkasse-rules'
+    to: '/transaction-rules'
   },
   {
     label: 'Asset Rules',
