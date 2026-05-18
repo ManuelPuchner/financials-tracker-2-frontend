@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import type { AssetInfo } from '~/types/transaction'
 
-defineProps<{ assetInfo: AssetInfo; currency: string }>()
+defineProps<{ assetInfo: AssetInfo, currency: string }>()
 </script>
 
 <template>
   <div>
-    <p class="text-xs text-muted uppercase tracking-wide mb-2">Asset</p>
+    <p class="text-xs text-muted uppercase tracking-wide mb-2">
+      Asset
+    </p>
     <div class="grid grid-cols-2 gap-x-8 gap-y-2">
       <div class="flex flex-col gap-0.5">
         <span class="text-xs text-muted">Name</span>

@@ -31,7 +31,6 @@ const columns: TableColumn<UserCategory>[] = [
   { id: 'actions', header: '' }
 ]
 
-
 async function load() {
   loading.value = true
   try {
@@ -97,145 +96,156 @@ onMounted(load)
 </script>
 
 <template>
-  <UDashboardPanel>
-    <template #header>
-      <UDashboardNavbar title="Categories">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-        <template #right>
-          <UButton
-            label="New Category"
-            icon="i-lucide-plus"
-            size="sm"
-            @click="openCreate"
-          />
-        </template>
-      </UDashboardNavbar>
-    </template>
-
-    <template #body>
-      <div class="flex flex-col gap-4">
-        <div
-          v-if="loading"
-          class="flex justify-center py-12"
-        >
-          <UIcon name="i-lucide-loader-circle" class="size-6 animate-spin text-muted" />
-        </div>
-
-        <div
-          v-else-if="categories.length === 0"
-          class="text-muted text-sm py-8 text-center"
-        >
-          No categories yet. Create one to get started.
-        </div>
-
-        <UTable
-          v-else
-          :data="categories"
-          :columns="columns"
-          :loading="loading"
-        >
-          <template #category-cell="{ row }">
-            <div
-              class="flex items-center gap-3 cursor-pointer"
-              @click="navigateTo(`/categories/${row.original.id}`)"
-            >
-              <span
-                class="size-3 rounded-full shrink-0"
-                :style="{ backgroundColor: row.original.color ?? '#888' }"
-              />
-              <span class="font-medium">{{ row.original.name }}</span>
-            </div>
+  <div>
+    <UDashboardPanel>
+      <template #header>
+        <UDashboardNavbar title="Categories">
+          <template #leading>
+            <UDashboardSidebarCollapse />
           </template>
-
-          <template #icon-cell="{ row }">
-            <div
-              class="cursor-pointer"
-              @click="navigateTo(`/categories/${row.original.id}`)"
-            >
-              <UIcon
-                v-if="row.original.icon"
-                :name="`i-lucide-${row.original.icon}`"
-                class="size-4 text-muted"
-              />
-              <span v-else class="text-muted text-sm">—</span>
-            </div>
-          </template>
-
-          <template #actions-cell="{ row }">
-            <div class="flex items-center gap-1 justify-end">
-              <UButton
-                icon="i-lucide-pencil"
-                color="neutral"
-                variant="ghost"
-                size="xs"
-                @click="openEdit(row.original)"
-              />
-              <UButton
-                icon="i-lucide-trash-2"
-                color="error"
-                variant="ghost"
-                size="xs"
-                @click="handleDelete(row.original)"
-              />
-            </div>
-          </template>
-        </UTable>
-      </div>
-    </template>
-  </UDashboardPanel>
-
-  <UModal
-    v-model:open="showModal"
-    :title="editingCategory ? 'Edit Category' : 'New Category'"
-  >
-    <template #body>
-      <div class="flex flex-col gap-4">
-        <UFormField label="Name" required>
-          <UInput
-            v-model="form.name"
-            placeholder="e.g. Restaurants"
-            class="w-full"
-          />
-        </UFormField>
-        <UFormField label="Color">
-          <div class="flex items-center gap-2">
-            <input
-              v-model="form.color"
-              type="color"
-              class="size-9 rounded cursor-pointer border border-default"
+          <template #right>
+            <UButton
+              label="New Category"
+              icon="i-lucide-plus"
+              size="sm"
+              @click="openCreate"
             />
-            <UInput
-              v-model="form.color"
-              placeholder="#6366f1"
-              class="flex-1 font-mono"
+          </template>
+        </UDashboardNavbar>
+      </template>
+
+      <template #body>
+        <div class="flex flex-col gap-4">
+          <div
+            v-if="loading"
+            class="flex justify-center py-12"
+          >
+            <UIcon
+              name="i-lucide-loader-circle"
+              class="size-6 animate-spin text-muted"
             />
           </div>
-        </UFormField>
-        <UFormField label="Icon">
-          <UInput
-            v-model="form.icon"
-            placeholder="e.g. shopping-cart"
+
+          <div
+            v-else-if="categories.length === 0"
+            class="text-muted text-sm py-8 text-center"
+          >
+            No categories yet. Create one to get started.
+          </div>
+
+          <UTable
+            v-else
+            :data="categories"
+            :columns="columns"
+            :loading="loading"
+          >
+            <template #category-cell="{ row }">
+              <div
+                class="flex items-center gap-3 cursor-pointer"
+                @click="navigateTo(`/categories/${row.original.id}`)"
+              >
+                <span
+                  class="size-3 rounded-full shrink-0"
+                  :style="{ backgroundColor: row.original.color ?? '#888' }"
+                />
+                <span class="font-medium">{{ row.original.name }}</span>
+              </div>
+            </template>
+
+            <template #icon-cell="{ row }">
+              <div
+                class="cursor-pointer"
+                @click="navigateTo(`/categories/${row.original.id}`)"
+              >
+                <UIcon
+                  v-if="row.original.icon"
+                  :name="`i-lucide-${row.original.icon}`"
+                  class="size-4 text-muted"
+                />
+                <span
+                  v-else
+                  class="text-muted text-sm"
+                >—</span>
+              </div>
+            </template>
+
+            <template #actions-cell="{ row }">
+              <div class="flex items-center gap-1 justify-end">
+                <UButton
+                  icon="i-lucide-pencil"
+                  color="neutral"
+                  variant="ghost"
+                  size="xs"
+                  @click="openEdit(row.original)"
+                />
+                <UButton
+                  icon="i-lucide-trash-2"
+                  color="error"
+                  variant="ghost"
+                  size="xs"
+                  @click="handleDelete(row.original)"
+                />
+              </div>
+            </template>
+          </UTable>
+        </div>
+      </template>
+    </UDashboardPanel>
+
+    <UModal
+      v-model:open="showModal"
+      :title="editingCategory ? 'Edit Category' : 'New Category'"
+    >
+      <template #body>
+        <div class="flex flex-col gap-4">
+          <UFormField
+            label="Name"
+            required
+          >
+            <UInput
+              v-model="form.name"
+              placeholder="e.g. Restaurants"
+              class="w-full"
+            />
+          </UFormField>
+          <UFormField label="Color">
+            <div class="flex items-center gap-2">
+              <input
+                v-model="form.color"
+                type="color"
+                class="size-9 rounded cursor-pointer border border-default"
+              >
+              <UInput
+                v-model="form.color"
+                placeholder="#6366f1"
+                class="flex-1 font-mono"
+              />
+            </div>
+          </UFormField>
+          <UFormField label="Icon">
+            <UInput
+              v-model="form.icon"
+              placeholder="e.g. shopping-cart"
+            />
+          </UFormField>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <UButton
+            label="Cancel"
+            color="neutral"
+            variant="outline"
+            @click="showModal = false"
           />
-        </UFormField>
-      </div>
-    </template>
-    <template #footer>
-      <div class="flex justify-end gap-2">
-        <UButton
-          label="Cancel"
-          color="neutral"
-          variant="outline"
-          @click="showModal = false"
-        />
-        <UButton
-          :label="editingCategory ? 'Save' : 'Create'"
-          :loading="saving"
-          :disabled="!form.name.trim()"
-          @click="handleSave"
-        />
-      </div>
-    </template>
-  </UModal>
+          <UButton
+            :label="editingCategory ? 'Save' : 'Create'"
+            :loading="saving"
+            :disabled="!form.name.trim()"
+            @click="handleSave"
+          />
+        </div>
+      </template>
+    </UModal>
+  </div>
 </template>

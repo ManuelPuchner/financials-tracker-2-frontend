@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { DashboardOverview, DashboardIncome } from "~/types/dashboard";
+import type { DashboardOverview, DashboardIncome } from '~/types/dashboard'
 
-const props = defineProps<{
-  overview: DashboardOverview | null | undefined;
-  income: DashboardIncome | null | undefined;
-  overviewLoading: boolean;
-  incomeLoading: boolean;
-}>();
+defineProps<{
+  overview: DashboardOverview | null | undefined
+  income: DashboardIncome | null | undefined
+  overviewLoading: boolean
+  incomeLoading: boolean
+}>()
 </script>
 
 <template>

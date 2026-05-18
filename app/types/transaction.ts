@@ -94,24 +94,24 @@ export interface UserCategoryRequest {
   icon?: string
 }
 
-export type TransactionType =
-  | 'BUY'
-  | 'SELL'
-  | 'CUSTOMER_INPAYMENT'
-  | 'CUSTOMER_INBOUND'
-  | 'STOCKPERK'
-  | 'INTEREST_PAYMENT'
-  | 'DIVIDEND'
-  | 'CARD_TRANSACTION'
-  | 'CARD_TRANSACTION_INTERNATIONAL'
-  | 'MIGRATION'
-  | 'TRANSFER_INBOUND'
-  | 'TRANSFER_INSTANT_INBOUND'
-  | 'TRANSFER_INSTANT_OUTBOUND'
-  | 'BENEFITS_SAVEBACK'
-  | 'TAX_OPTIMIZATION'
-  | 'BONUS'
-  | 'EARNINGS'
+export type TransactionType
+  = | 'BUY'
+    | 'SELL'
+    | 'CUSTOMER_INPAYMENT'
+    | 'CUSTOMER_INBOUND'
+    | 'STOCKPERK'
+    | 'INTEREST_PAYMENT'
+    | 'DIVIDEND'
+    | 'CARD_TRANSACTION'
+    | 'CARD_TRANSACTION_INTERNATIONAL'
+    | 'MIGRATION'
+    | 'TRANSFER_INBOUND'
+    | 'TRANSFER_INSTANT_INBOUND'
+    | 'TRANSFER_INSTANT_OUTBOUND'
+    | 'BENEFITS_SAVEBACK'
+    | 'TAX_OPTIMIZATION'
+    | 'BONUS'
+    | 'EARNINGS'
 
 export type AssetClass = 'FUND' | 'STOCK' | 'DERIVATIVE' | 'CRYPTO'
 

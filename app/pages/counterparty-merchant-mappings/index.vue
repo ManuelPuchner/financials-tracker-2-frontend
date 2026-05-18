@@ -49,23 +49,39 @@ onMounted(load)
           detail page.
         </p>
 
-        <div v-if="loading" class="flex justify-center py-12">
-          <UIcon name="i-lucide-loader-circle" class="size-6 animate-spin text-muted" />
+        <div
+          v-if="loading"
+          class="flex justify-center py-12"
+        >
+          <UIcon
+            name="i-lucide-loader-circle"
+            class="size-6 animate-spin text-muted"
+          />
         </div>
 
-        <div v-else-if="mappings.length === 0" class="text-muted text-sm py-8 text-center">
+        <div
+          v-else-if="mappings.length === 0"
+          class="text-muted text-sm py-8 text-center"
+        >
           No mappings yet. Open a counterparty's detail page to add one.
         </div>
 
-        <div v-else class="flex flex-col gap-2">
+        <div
+          v-else
+          class="flex flex-col gap-2"
+        >
           <div
             v-for="m in mappings"
             :key="m.id"
             class="flex items-center gap-3 px-4 py-3 rounded-lg border border-default bg-background"
           >
             <div class="flex-1 min-w-0">
-              <div class="text-sm font-medium truncate">{{ m.counterpartyName ?? m.counterpartyIban }}</div>
-              <div class="font-mono text-xs text-muted mt-0.5">{{ m.counterpartyIban }}</div>
+              <div class="text-sm font-medium truncate">
+                {{ m.counterpartyName ?? m.counterpartyIban }}
+              </div>
+              <div class="font-mono text-xs text-muted mt-0.5">
+                {{ m.counterpartyIban }}
+              </div>
               <div class="text-sm text-muted mt-1">
                 → <span class="font-medium text-default">{{ m.merchantName }}</span>
               </div>

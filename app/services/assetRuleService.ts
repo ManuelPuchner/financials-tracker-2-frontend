@@ -17,5 +17,5 @@ export async function updateAssetRule(id: number, request: AssetRuleRequest): Pr
 }
 
 export async function deleteAssetRule(id: number): Promise<void> {
-  return apiDelete<void>(`${BASE}/${id}`)
+  await apiDelete<unknown>(`${BASE}/${id}`)
 }

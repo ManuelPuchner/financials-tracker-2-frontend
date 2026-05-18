@@ -16,7 +16,7 @@ const emit = defineEmits<{
 
 const open = computed({
   get: () => props.modelValue,
-  set: (val) => emit('update:modelValue', val)
+  set: val => emit('update:modelValue', val)
 })
 
 const toast = useToast()
@@ -97,7 +97,10 @@ function formatAmount(value: number | null | undefined, currency: string): strin
     class="sm:max-w-2xl"
   >
     <template #body>
-      <div v-if="transaction" class="flex flex-col gap-6">
+      <div
+        v-if="transaction"
+        class="flex flex-col gap-6"
+      >
         <!-- Core fields -->
         <div class="grid grid-cols-2 gap-x-8 gap-y-3">
           <div class="flex flex-col gap-0.5">
@@ -114,7 +117,10 @@ function formatAmount(value: number | null | undefined, currency: string): strin
           </div>
           <div class="flex flex-col gap-0.5">
             <span class="text-xs text-muted uppercase tracking-wide">Amount</span>
-            <TransactionsTransactionAmountBadge :amount="transaction.amount" :currency="transaction.currency" />
+            <TransactionsTransactionAmountBadge
+              :amount="transaction.amount"
+              :currency="transaction.currency"
+            />
           </div>
           <div class="flex flex-col gap-0.5">
             <span class="text-xs text-muted uppercase tracking-wide">Fee</span>
@@ -128,7 +134,10 @@ function formatAmount(value: number | null | undefined, currency: string): strin
             <span class="text-xs text-muted uppercase tracking-wide">Account Type</span>
             <span class="text-sm">{{ transaction.accountType }}</span>
           </div>
-          <div v-if="transaction.account" class="flex flex-col gap-0.5">
+          <div
+            v-if="transaction.account"
+            class="flex flex-col gap-0.5"
+          >
             <span class="text-xs text-muted uppercase tracking-wide">Account</span>
             <div class="flex items-center gap-1.5">
               <span
@@ -146,14 +155,28 @@ function formatAmount(value: number | null | undefined, currency: string): strin
         <div class="flex flex-col gap-3">
           <div class="flex flex-col gap-2">
             <span class="text-xs text-muted uppercase tracking-wide">User Category</span>
-            <USelectMenu v-model="selectedCategoryId" :items="categoryOptions" value-key="value" label-key="label" portal />
+            <USelectMenu
+              v-model="selectedCategoryId"
+              :items="categoryOptions"
+              value-key="value"
+              label-key="label"
+              portal
+            />
           </div>
           <div class="flex flex-col gap-2">
             <span class="text-xs text-muted uppercase tracking-wide">Note</span>
-            <UInput v-model="editNote" placeholder="Add a note…" />
+            <UInput
+              v-model="editNote"
+              placeholder="Add a note…"
+            />
           </div>
           <div class="flex justify-end">
-            <UButton label="Save changes" size="sm" :loading="saving" @click="handleSave" />
+            <UButton
+              label="Save changes"
+              size="sm"
+              :loading="saving"
+              @click="handleSave"
+            />
           </div>
         </div>
 
@@ -168,7 +191,10 @@ function formatAmount(value: number | null | undefined, currency: string): strin
         <template v-if="transaction.merchantName || transaction.mccCode">
           <USeparator />
           <div class="grid grid-cols-2 gap-x-8 gap-y-2">
-            <div v-if="transaction.merchantName" class="flex flex-col gap-0.5">
+            <div
+              v-if="transaction.merchantName"
+              class="flex flex-col gap-0.5"
+            >
               <span class="text-xs text-muted uppercase tracking-wide">Merchant</span>
               <span class="text-sm">{{ transaction.merchantName }}</span>
               <span
@@ -178,7 +204,10 @@ function formatAmount(value: number | null | undefined, currency: string): strin
                 Original: {{ transaction.rawMerchantName }}
               </span>
             </div>
-            <div v-if="transaction.mccCode" class="flex flex-col gap-0.5">
+            <div
+              v-if="transaction.mccCode"
+              class="flex flex-col gap-0.5"
+            >
               <span class="text-xs text-muted uppercase tracking-wide">MCC Code</span>
               <span class="text-sm">
                 <span class="font-mono">{{ transaction.mccCode.mcc }}</span> — {{ transaction.mccCode.description }}
@@ -189,7 +218,10 @@ function formatAmount(value: number | null | undefined, currency: string): strin
 
         <template v-if="transaction.assetInfo">
           <USeparator />
-          <TransactionsDetailTransactionAssetInfo :asset-info="transaction.assetInfo" :currency="transaction.currency" />
+          <TransactionsDetailTransactionAssetInfo
+            :asset-info="transaction.assetInfo"
+            :currency="transaction.currency"
+          />
         </template>
 
         <template v-if="transaction.counterpartyInfo">
@@ -236,11 +268,28 @@ function formatAmount(value: number | null | undefined, currency: string): strin
           />
           <template v-else>
             <span class="text-sm text-error">Delete permanently?</span>
-            <UButton label="Yes, delete" color="error" size="sm" :loading="deleting" @click="handleDelete" />
-            <UButton label="Cancel" color="neutral" variant="ghost" size="sm" @click="confirmDelete = false" />
+            <UButton
+              label="Yes, delete"
+              color="error"
+              size="sm"
+              :loading="deleting"
+              @click="handleDelete"
+            />
+            <UButton
+              label="Cancel"
+              color="neutral"
+              variant="ghost"
+              size="sm"
+              @click="confirmDelete = false"
+            />
           </template>
         </div>
-        <UButton label="Close" color="neutral" variant="outline" @click="open = false" />
+        <UButton
+          label="Close"
+          color="neutral"
+          variant="outline"
+          @click="open = false"
+        />
       </div>
     </template>
   </UModal>

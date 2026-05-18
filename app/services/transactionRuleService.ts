@@ -16,5 +16,5 @@ export async function updateTransactionRule(id: number, request: TransactionRule
 }
 
 export async function deleteTransactionRule(id: number): Promise<void> {
-  return apiDelete<void>(`${BASE}/${id}`)
+  await apiDelete<unknown>(`${BASE}/${id}`)
 }

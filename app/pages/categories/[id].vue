@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { fetchCategoryById, updateCategory, deleteCategory } from '~/services/categoryService'
+import { fetchCategoryById, updateCategory } from '~/services/categoryService'
 import { fetchTransactionsByUserCategory } from '~/services/transactionService'
 import type { UserCategory, UserCategoryRequest, TransactionResponse } from '~/types/transaction'
 
@@ -91,147 +91,159 @@ onMounted(async () => {
 </script>
 
 <template>
-  <UDashboardPanel>
-    <template #header>
-      <UDashboardNavbar :title="category?.name ?? 'Category'">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-        <template #right>
-          <UButton
-            icon="i-lucide-arrow-left"
-            label="Back"
-            variant="ghost"
-            size="sm"
-            @click="navigateTo('/categories')"
-          />
-        </template>
-      </UDashboardNavbar>
-    </template>
+  <div>
+    <UDashboardPanel>
+      <template #header>
+        <UDashboardNavbar :title="category?.name ?? 'Category'">
+          <template #leading>
+            <UDashboardSidebarCollapse />
+          </template>
+          <template #right>
+            <UButton
+              icon="i-lucide-arrow-left"
+              label="Back"
+              variant="ghost"
+              size="sm"
+              @click="navigateTo('/categories')"
+            />
+          </template>
+        </UDashboardNavbar>
+      </template>
 
-    <template #body>
-      <ClientOnly>
-        <div class="flex flex-col gap-6 p-1">
-          <!-- Category info card -->
-          <UCard>
-            <div
-              v-if="catLoading"
-              class="flex justify-center py-4"
-            >
-              <UIcon name="i-lucide-loader-circle" class="size-5 animate-spin text-muted" />
-            </div>
-            <div
-              v-else-if="category"
-              class="flex items-center justify-between"
-            >
-              <div class="flex items-center gap-4">
-                <div
-                  class="size-10 rounded-full flex items-center justify-center"
-                  :style="{ backgroundColor: (category.color ?? '#888') + '22' }"
-                >
-                  <UIcon
-                    v-if="category.icon"
-                    :name="`i-lucide-${category.icon}`"
-                    class="size-5"
-                    :style="{ color: category.color ?? '#888' }"
-                  />
-                  <span
-                    v-else
-                    class="size-4 rounded-full"
-                    :style="{ backgroundColor: category.color ?? '#888' }"
-                  />
-                </div>
-                <div>
-                  <p class="font-semibold text-base">{{ category.name }}</p>
-                  <p class="text-xs text-muted font-mono">{{ category.color ?? '—' }}</p>
-                </div>
-              </div>
-              <div class="flex items-center gap-2">
-                <UButton
-                  icon="i-lucide-pencil"
-                  label="Edit"
-                  color="neutral"
-                  variant="outline"
-                  size="sm"
-                  @click="openEdit"
+      <template #body>
+        <ClientOnly>
+          <div class="flex flex-col gap-6 p-1">
+            <!-- Category info card -->
+            <UCard>
+              <div
+                v-if="catLoading"
+                class="flex justify-center py-4"
+              >
+                <UIcon
+                  name="i-lucide-loader-circle"
+                  class="size-5 animate-spin text-muted"
                 />
               </div>
-            </div>
-          </UCard>
+              <div
+                v-else-if="category"
+                class="flex items-center justify-between"
+              >
+                <div class="flex items-center gap-4">
+                  <div
+                    class="size-10 rounded-full flex items-center justify-center"
+                    :style="{ backgroundColor: (category.color ?? '#888') + '22' }"
+                  >
+                    <UIcon
+                      v-if="category.icon"
+                      :name="`i-lucide-${category.icon}`"
+                      class="size-5"
+                      :style="{ color: category.color ?? '#888' }"
+                    />
+                    <span
+                      v-else
+                      class="size-4 rounded-full"
+                      :style="{ backgroundColor: category.color ?? '#888' }"
+                    />
+                  </div>
+                  <div>
+                    <p class="font-semibold text-base">
+                      {{ category.name }}
+                    </p>
+                    <p class="text-xs text-muted font-mono">
+                      {{ category.color ?? '—' }}
+                    </p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <UButton
+                    icon="i-lucide-pencil"
+                    label="Edit"
+                    color="neutral"
+                    variant="outline"
+                    size="sm"
+                    @click="openEdit"
+                  />
+                </div>
+              </div>
+            </UCard>
 
-          <!-- Transactions -->
-          <TransactionsTransactionTable
-            :transactions="transactions"
-            :loading="txLoading"
-            :total-elements="txTotalElements"
-            :total-pages="txTotalPages"
-            :current-page="txPage"
-            :page-size="txPageSize"
-            @select="openDetail"
-            @page-change="p => { txPage = p; loadTransactions() }"
-          />
-        </div>
-      </ClientOnly>
-    </template>
-  </UDashboardPanel>
-
-  <!-- Edit modal -->
-  <UModal
-    v-model:open="showEditModal"
-    title="Edit Category"
-  >
-    <template #body>
-      <div class="flex flex-col gap-4">
-        <UFormField label="Name" required>
-          <UInput
-            v-model="form.name"
-            placeholder="e.g. Restaurants"
-            class="w-full"
-          />
-        </UFormField>
-        <UFormField label="Color">
-          <div class="flex items-center gap-2">
-            <input
-              v-model="form.color"
-              type="color"
-              class="size-9 rounded cursor-pointer border border-default"
-            />
-            <UInput
-              v-model="form.color"
-              placeholder="#6366f1"
-              class="flex-1 font-mono"
+            <!-- Transactions -->
+            <TransactionsTransactionTable
+              :transactions="transactions"
+              :loading="txLoading"
+              :total-elements="txTotalElements"
+              :total-pages="txTotalPages"
+              :current-page="txPage"
+              :page-size="txPageSize"
+              @select="openDetail"
+              @page-change="p => { txPage = p; loadTransactions() }"
             />
           </div>
-        </UFormField>
-        <UFormField label="Icon">
-          <UInput
-            v-model="form.icon"
-            placeholder="e.g. shopping-cart"
-          />
-        </UFormField>
-      </div>
-    </template>
-    <template #footer>
-      <div class="flex justify-end gap-2">
-        <UButton
-          label="Cancel"
-          color="neutral"
-          variant="outline"
-          @click="showEditModal = false"
-        />
-        <UButton
-          label="Save"
-          :loading="saving"
-          :disabled="!form.name.trim()"
-          @click="handleSave"
-        />
-      </div>
-    </template>
-  </UModal>
+        </ClientOnly>
+      </template>
+    </UDashboardPanel>
 
-  <TransactionsTransactionDetailModal
-    v-model="showDetailModal"
-    :transaction="selectedTransaction"
-    @updated="onTransactionUpdated"
-  />
+    <!-- Edit modal -->
+    <UModal
+      v-model:open="showEditModal"
+      title="Edit Category"
+    >
+      <template #body>
+        <div class="flex flex-col gap-4">
+          <UFormField
+            label="Name"
+            required
+          >
+            <UInput
+              v-model="form.name"
+              placeholder="e.g. Restaurants"
+              class="w-full"
+            />
+          </UFormField>
+          <UFormField label="Color">
+            <div class="flex items-center gap-2">
+              <input
+                v-model="form.color"
+                type="color"
+                class="size-9 rounded cursor-pointer border border-default"
+              >
+              <UInput
+                v-model="form.color"
+                placeholder="#6366f1"
+                class="flex-1 font-mono"
+              />
+            </div>
+          </UFormField>
+          <UFormField label="Icon">
+            <UInput
+              v-model="form.icon"
+              placeholder="e.g. shopping-cart"
+            />
+          </UFormField>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <UButton
+            label="Cancel"
+            color="neutral"
+            variant="outline"
+            @click="showEditModal = false"
+          />
+          <UButton
+            label="Save"
+            :loading="saving"
+            :disabled="!form.name.trim()"
+            @click="handleSave"
+          />
+        </div>
+      </template>
+    </UModal>
+
+    <TransactionsTransactionDetailModal
+      v-model="showDetailModal"
+      :transaction="selectedTransaction"
+      @updated="onTransactionUpdated"
+    />
+  </div>
 </template>

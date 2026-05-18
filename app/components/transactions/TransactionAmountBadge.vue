@@ -9,8 +9,6 @@ const formatted = computed(() => {
   const sign = props.amount >= 0 ? '+' : '-'
   return `${sign}${abs.toLocaleString('de-AT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${props.currency}`
 })
-
-const color = computed(() => (props.amount >= 0 ? 'success' : 'error'))
 </script>
 
 <template>

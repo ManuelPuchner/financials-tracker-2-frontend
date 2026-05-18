@@ -28,19 +28,25 @@ const searchItems = computed(() => {
     label: c.name ? `${c.name} — ${c.iban}` : c.iban,
     value: String(c.id),
     iban: c.iban,
-    name: c.name ?? c.iban,
+    name: c.name ?? c.iban
   }))
 })
 
 let searchTimeout: ReturnType<typeof setTimeout>
 watch(searchTerm, (val) => {
   clearTimeout(searchTimeout)
-  if (!val.trim()) { merchantResults.value = []; counterpartyResults.value = []; return }
+  if (!val.trim()) {
+    merchantResults.value = []
+    counterpartyResults.value = []
+    return
+  }
   searchTimeout = setTimeout(() => doSearch(val.trim()), 250)
 })
 watch(mode, () => {
-  searchTerm.value = ''; selectedItem.value = null
-  merchantResults.value = []; counterpartyResults.value = []
+  searchTerm.value = ''
+  selectedItem.value = null
+  merchantResults.value = []
+  counterpartyResults.value = []
 })
 
 async function doSearch(q: string) {
@@ -51,14 +57,20 @@ async function doSearch(q: string) {
     } else {
       counterpartyResults.value = (await fetchCounterparties({ size: 20 }, q)).content
     }
-  } finally { searchLoading.value = false }
+  } finally {
+    searchLoading.value = false
+  }
 }
 
 const showNewModal = ref(false)
 const newName = ref('')
 const newIban = ref('')
 
-function openNewModal() { newName.value = searchTerm.value; newIban.value = ''; showNewModal.value = true }
+function openNewModal() {
+  newName.value = searchTerm.value
+  newIban.value = ''
+  showNewModal.value = true
+}
 function confirmNew() {
   if (!newName.value.trim()) return
   if (mode.value === 'merchant') {
@@ -67,7 +79,9 @@ function confirmNew() {
     const iban = newIban.value.trim()
     selectedItem.value = {
       label: iban ? `${newName.value.trim()} — ${iban}` : newName.value.trim(),
-      value: '__new__', iban, name: newName.value.trim(),
+      value: '__new__',
+      iban,
+      name: newName.value.trim()
     }
   }
   searchTerm.value = selectedItem.value!.label
@@ -128,10 +142,16 @@ const fileInput = ref<HTMLInputElement | null>(null)
 const dragOver = ref(false)
 const parseError = ref<string | null>(null)
 
-function onDragOver(e: DragEvent) { e.preventDefault(); dragOver.value = true }
-function onDragLeave() { dragOver.value = false }
+function onDragOver(e: DragEvent) {
+  e.preventDefault()
+  dragOver.value = true
+}
+function onDragLeave() {
+  dragOver.value = false
+}
 function onDrop(e: DragEvent) {
-  e.preventDefault(); dragOver.value = false
+  e.preventDefault()
+  dragOver.value = false
   const file = e.dataTransfer?.files[0]
   if (file) readFile(file)
 }
@@ -143,14 +163,17 @@ function onFileChange(e: Event) {
 function readFile(file: File) {
   parseError.value = null
   const reader = new FileReader()
-  reader.onload = (e) => parseCsvIntoRows(e.target?.result as string)
+  reader.onload = e => parseCsvIntoRows(e.target?.result as string)
   reader.readAsText(file)
   if (fileInput.value) fileInput.value.value = ''
 }
 
 function parseCsvIntoRows(text: string) {
   const lines = text.trim().split(/\r?\n/)
-  if (lines.length < 2) { parseError.value = 'CSV must have a header row and at least one data row.'; return }
+  if (lines.length < 2) {
+    parseError.value = 'CSV must have a header row and at least one data row.'
+    return
+  }
   const sep = lines[0].includes(';') ? ';' : ','
   const added: EditableRow[] = []
   for (let i = 1; i < lines.length; i++) {
@@ -165,10 +188,13 @@ function parseCsvIntoRows(text: string) {
       date: dateRaw,
       amount: Math.abs(rawAmount),
       direction: rawAmount >= 0 ? 'incoming' : 'outgoing',
-      note: noteRaw,
+      note: noteRaw
     })
   }
-  if (added.length === 0) { parseError.value = 'No valid rows found in the CSV.'; return }
+  if (added.length === 0) {
+    parseError.value = 'No valid rows found in the CSV.'
+    return
+  }
   rows.value.push(...added)
   toast.add({ title: `${added.length} rows added from CSV`, color: 'success', icon: 'i-lucide-check' })
 }
@@ -180,13 +206,17 @@ const importResult = ref<{ imported: number, failed: number } | null>(null)
 
 async function handleImport() {
   if (!selectedItem.value) {
-    toast.add({ title: 'Please select a merchant or counterparty', color: 'error', icon: 'i-lucide-alert-circle' }); return
+    toast.add({ title: 'Please select a merchant or counterparty', color: 'error', icon: 'i-lucide-alert-circle' })
+    return
   }
   if (validRows.value.length === 0) {
-    toast.add({ title: 'No valid rows to import', color: 'error', icon: 'i-lucide-alert-circle' }); return
+    toast.add({ title: 'No valid rows to import', color: 'error', icon: 'i-lucide-alert-circle' })
+    return
   }
-  submitting.value = true; progress.value = 0
-  let imported = 0; let failed = 0
+  submitting.value = true
+  progress.value = 0
+  let imported = 0
+  let failed = 0
 
   for (const row of validRows.value) {
     try {
@@ -205,7 +235,7 @@ async function handleImport() {
         ...(mode.value === 'merchant'
           ? { merchantName: selectedItem.value!.label }
           : { counterpartyName: selectedItem.value!.name ?? selectedItem.value!.label, counterpartyIban: selectedItem.value!.iban || undefined }
-        ),
+        )
       }
       const tx = await createTransaction(request)
       if (selectedCategoryId.value) {
@@ -221,7 +251,10 @@ async function handleImport() {
 }
 
 function resetAll() {
-  rows.value = []; importResult.value = null; progress.value = 0; parseError.value = null
+  rows.value = []
+  importResult.value = null
+  progress.value = 0
+  parseError.value = null
 }
 </script>
 
@@ -239,7 +272,9 @@ function resetAll() {
     <!-- Source selection -->
     <UCard>
       <div class="flex flex-col gap-4">
-        <p class="text-xs font-semibold text-muted uppercase tracking-wide">Source</p>
+        <p class="text-xs font-semibold text-muted uppercase tracking-wide">
+          Source
+        </p>
 
         <div class="flex rounded-lg border border-default overflow-hidden">
           <button
@@ -247,7 +282,10 @@ function resetAll() {
             :class="mode === 'merchant' ? 'bg-primary text-white' : 'text-muted hover:bg-elevated'"
             @click="mode = 'merchant'"
           >
-            <UIcon name="i-lucide-store" class="size-4" />
+            <UIcon
+              name="i-lucide-store"
+              class="size-4"
+            />
             Merchant
           </button>
           <div class="w-px bg-default" />
@@ -256,13 +294,19 @@ function resetAll() {
             :class="mode === 'counterparty' ? 'bg-primary text-white' : 'text-muted hover:bg-elevated'"
             @click="mode = 'counterparty'"
           >
-            <UIcon name="i-lucide-user" class="size-4" />
+            <UIcon
+              name="i-lucide-user"
+              class="size-4"
+            />
             Counterparty
           </button>
         </div>
 
         <div class="grid grid-cols-3 gap-4">
-          <UFormField :label="mode === 'merchant' ? 'Merchant' : 'Counterparty'" required>
+          <UFormField
+            :label="mode === 'merchant' ? 'Merchant' : 'Counterparty'"
+            required
+          >
             <div class="flex gap-2">
               <UInputMenu
                 v-model="selectedItem"
@@ -274,12 +318,20 @@ function resetAll() {
                 class="flex-1"
               />
               <UTooltip :text="`Add new ${mode === 'merchant' ? 'merchant' : 'counterparty'}`">
-                <UButton icon="i-lucide-plus" color="neutral" variant="outline" @click="openNewModal" />
+                <UButton
+                  icon="i-lucide-plus"
+                  color="neutral"
+                  variant="outline"
+                  @click="openNewModal"
+                />
               </UTooltip>
             </div>
           </UFormField>
 
-          <UFormField label="Account" required>
+          <UFormField
+            label="Account"
+            required
+          >
             <USelect
               v-model="selectedAccount"
               :items="accountOptions"
@@ -306,10 +358,20 @@ function resetAll() {
           v-if="selectedItem"
           class="flex items-center gap-3 px-4 py-3 rounded-lg bg-success/10 border border-success/20"
         >
-          <UIcon name="i-lucide-check-circle" class="size-5 text-success shrink-0" />
+          <UIcon
+            name="i-lucide-check-circle"
+            class="size-5 text-success shrink-0"
+          />
           <div class="flex-1 min-w-0">
-            <p class="text-sm font-medium">{{ selectedItem.name ?? selectedItem.label }}</p>
-            <p v-if="selectedItem.iban" class="text-xs text-muted font-mono mt-0.5">{{ selectedItem.iban }}</p>
+            <p class="text-sm font-medium">
+              {{ selectedItem.name ?? selectedItem.label }}
+            </p>
+            <p
+              v-if="selectedItem.iban"
+              class="text-xs text-muted font-mono mt-0.5"
+            >
+              {{ selectedItem.iban }}
+            </p>
           </div>
           <UButton
             icon="i-lucide-x"
@@ -326,10 +388,18 @@ function resetAll() {
     <UCard>
       <div class="flex flex-col gap-4">
         <div class="flex items-center justify-between">
-          <p class="text-xs font-semibold text-muted uppercase tracking-wide">Transactions</p>
+          <p class="text-xs font-semibold text-muted uppercase tracking-wide">
+            Transactions
+          </p>
           <div class="flex items-center gap-2">
             <!-- CSV upload -->
-            <input ref="fileInput" type="file" accept=".csv" class="hidden" @change="onFileChange" />
+            <input
+              ref="fileInput"
+              type="file"
+              accept=".csv"
+              class="hidden"
+              @change="onFileChange"
+            >
             <UButton
               label="Import CSV"
               icon="i-lucide-file-up"
@@ -375,7 +445,10 @@ function resetAll() {
           @drop="onDrop"
           @click="fileInput?.click()"
         >
-          <UIcon name="i-lucide-upload-cloud" class="size-4 inline mr-1" />
+          <UIcon
+            name="i-lucide-upload-cloud"
+            class="size-4 inline mr-1"
+          />
           Drop a CSV here to populate the table
         </div>
 
@@ -417,7 +490,7 @@ function resetAll() {
                     v-model="row.date"
                     type="date"
                     class="w-full bg-transparent text-sm outline-none focus:ring-1 focus:ring-primary rounded px-1 py-0.5 font-mono"
-                  />
+                  >
                 </td>
 
                 <!-- Amount with direction toggle -->
@@ -428,7 +501,10 @@ function resetAll() {
                       :class="row.direction === 'outgoing' ? 'bg-error/15 text-error' : 'text-muted hover:bg-elevated'"
                       @click="row.direction = 'outgoing'"
                     >
-                      <UIcon name="i-lucide-arrow-up" class="size-3" />
+                      <UIcon
+                        name="i-lucide-arrow-up"
+                        class="size-3"
+                      />
                       Out
                     </button>
                     <button
@@ -436,7 +512,10 @@ function resetAll() {
                       :class="row.direction === 'incoming' ? 'bg-success/15 text-success' : 'text-muted hover:bg-elevated'"
                       @click="row.direction = 'incoming'"
                     >
-                      <UIcon name="i-lucide-arrow-down" class="size-3" />
+                      <UIcon
+                        name="i-lucide-arrow-down"
+                        class="size-3"
+                      />
                       In
                     </button>
                     <input
@@ -445,7 +524,7 @@ function resetAll() {
                       step="0.01"
                       placeholder="0.00"
                       class="flex-1 min-w-0 bg-transparent px-2 py-1 text-sm outline-none"
-                    />
+                    >
                   </div>
                 </td>
 
@@ -456,7 +535,7 @@ function resetAll() {
                     type="text"
                     placeholder="Optional note…"
                     class="w-full bg-transparent text-sm outline-none focus:ring-1 focus:ring-primary rounded px-1 py-0.5"
-                  />
+                  >
                 </td>
 
                 <!-- Delete -->
@@ -541,21 +620,48 @@ function resetAll() {
   </div>
 
   <!-- New merchant / counterparty modal -->
-  <UModal v-model:open="showNewModal" :title="`Add New ${mode === 'merchant' ? 'Merchant' : 'Counterparty'}`">
+  <UModal
+    v-model:open="showNewModal"
+    :title="`Add New ${mode === 'merchant' ? 'Merchant' : 'Counterparty'}`"
+  >
     <template #body>
       <div class="flex flex-col gap-4">
-        <UFormField label="Name" required>
-          <UInput v-model="newName" placeholder="e.g. Billa" class="w-full" autofocus />
+        <UFormField
+          label="Name"
+          required
+        >
+          <UInput
+            v-model="newName"
+            placeholder="e.g. Billa"
+            class="w-full"
+            autofocus
+          />
         </UFormField>
-        <UFormField v-if="mode === 'counterparty'" label="IBAN">
-          <UInput v-model="newIban" placeholder="AT83…" class="w-full font-mono" />
+        <UFormField
+          v-if="mode === 'counterparty'"
+          label="IBAN"
+        >
+          <UInput
+            v-model="newIban"
+            placeholder="AT83…"
+            class="w-full font-mono"
+          />
         </UFormField>
       </div>
     </template>
     <template #footer>
       <div class="flex justify-end gap-2">
-        <UButton label="Cancel" color="neutral" variant="outline" @click="showNewModal = false" />
-        <UButton label="Add" :disabled="!newName.trim()" @click="confirmNew" />
+        <UButton
+          label="Cancel"
+          color="neutral"
+          variant="outline"
+          @click="showNewModal = false"
+        />
+        <UButton
+          label="Add"
+          :disabled="!newName.trim()"
+          @click="confirmNew"
+        />
       </div>
     </template>
   </UModal>

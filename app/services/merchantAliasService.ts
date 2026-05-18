@@ -16,5 +16,5 @@ export async function updateMerchantAlias(id: number, request: MerchantAliasRequ
 }
 
 export async function deleteMerchantAlias(id: number): Promise<void> {
-  return apiDelete<void>(`${BASE}/${id}`)
+  await apiDelete<unknown>(`${BASE}/${id}`)
 }

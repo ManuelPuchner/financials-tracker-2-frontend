@@ -11,7 +11,7 @@ definePageMeta({ layout: 'dashboard' })
 const route = useRoute()
 const id = Number(route.params.id)
 
-const { formatCurrency, formatNumber } = useFormatters()
+useFormatters()
 
 // Entity + stats
 const counterparty = ref<CounterpartyResponse | null>(null)
@@ -22,7 +22,7 @@ const accounts = ref<Account[]>([])
 const activeTab = ref('all')
 const tabs = computed(() => [
   { label: 'All Accounts', value: 'all' },
-  ...accounts.value.map(a => ({ label: a.name, value: String(a.id) })),
+  ...accounts.value.map(a => ({ label: a.name, value: String(a.id) }))
 ])
 
 const activeAccountId = computed(() =>
@@ -53,7 +53,7 @@ async function loadTransactions() {
   try {
     const result = await fetchCounterpartyTransactions(id, activeAccountId.value, {
       page: txPage.value,
-      size: txPageSize,
+      size: txPageSize
     })
     transactions.value = result.content
     txTotalElements.value = result.page.totalElements
@@ -131,144 +131,151 @@ onMounted(async () => {
 </script>
 
 <template>
-  <UDashboardPanel>
-    <template #header>
-      <UDashboardNavbar :title="counterparty?.name ?? 'Counterparty'">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-        <template #right>
-          <UButton
-            icon="i-lucide-arrow-left"
-            label="Back"
-            variant="ghost"
-            size="sm"
-            @click="navigateTo('/entities')"
-          />
-        </template>
-      </UDashboardNavbar>
-    </template>
+  <div>
+    <UDashboardPanel>
+      <template #header>
+        <UDashboardNavbar :title="counterparty?.name ?? 'Counterparty'">
+          <template #leading>
+            <UDashboardSidebarCollapse />
+          </template>
+          <template #right>
+            <UButton
+              icon="i-lucide-arrow-left"
+              label="Back"
+              variant="ghost"
+              size="sm"
+              @click="navigateTo('/entities')"
+            />
+          </template>
+        </UDashboardNavbar>
+      </template>
 
-    <template #body>
-      <ClientOnly>
-        <div class="flex flex-col gap-6 p-1">
-          <!-- Account tabs -->
-          <UTabs
-            v-model="activeTab"
-            :items="tabs"
-            color="neutral"
-            variant="link"
-            value-key="value"
-            label-key="label"
-          />
+      <template #body>
+        <ClientOnly>
+          <div class="flex flex-col gap-6 p-1">
+            <!-- Account tabs -->
+            <UTabs
+              v-model="activeTab"
+              :items="tabs"
+              color="neutral"
+              variant="link"
+              value-key="value"
+              label-key="label"
+            />
 
-          <!-- IBAN info + merchant mapping -->
-          <div class="flex flex-col gap-3">
-            <p v-if="counterparty" class="text-sm text-muted font-mono">
-              IBAN: {{ counterparty.iban }}
-            </p>
+            <!-- IBAN info + merchant mapping -->
+            <div class="flex flex-col gap-3">
+              <p
+                v-if="counterparty"
+                class="text-sm text-muted font-mono"
+              >
+                IBAN: {{ counterparty.iban }}
+              </p>
 
-            <!-- Merchant mapping card -->
-            <UCard>
-              <div class="flex flex-col gap-3">
-                <div class="flex items-center justify-between">
-                  <div>
-                    <p class="text-sm font-medium">Merchant Mapping</p>
-                    <p class="text-xs text-muted">
-                      Map this counterparty to a merchant so all transactions appear together in the Merchants view.
-                    </p>
+              <!-- Merchant mapping card -->
+              <UCard>
+                <div class="flex flex-col gap-3">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <p class="text-sm font-medium">
+                        Merchant Mapping
+                      </p>
+                      <p class="text-xs text-muted">
+                        Map this counterparty to a merchant so all transactions appear together in the Merchants view.
+                      </p>
+                    </div>
+                    <UBadge
+                      v-if="mapping"
+                      :label="mapping.merchantName"
+                      color="success"
+                      variant="subtle"
+                      icon="i-lucide-link"
+                    />
                   </div>
-                  <UBadge
-                    v-if="mapping"
-                    :label="mapping.merchantName"
-                    color="success"
-                    variant="subtle"
-                    icon="i-lucide-link"
-                  />
+                  <div class="flex items-center gap-2">
+                    <UInput
+                      v-model="mappingInput"
+                      placeholder="Merchant name (e.g. Amazon)"
+                      class="flex-1"
+                      @keydown.enter="saveMapping"
+                    />
+                    <UButton
+                      label="Save"
+                      size="sm"
+                      :loading="mappingSaving"
+                      :disabled="!mappingInput.trim()"
+                      @click="saveMapping"
+                    />
+                    <UButton
+                      v-if="mapping"
+                      icon="i-lucide-trash-2"
+                      color="error"
+                      variant="ghost"
+                      size="sm"
+                      :loading="mappingDeleting"
+                      @click="removeMapping"
+                    />
+                  </div>
                 </div>
-                <div class="flex items-center gap-2">
-                  <UInput
-                    v-model="mappingInput"
-                    placeholder="Merchant name (e.g. Amazon)"
-                    class="flex-1"
-                    @keydown.enter="saveMapping"
-                  />
-                  <UButton
-                    label="Save"
-                    size="sm"
-                    :loading="mappingSaving"
-                    :disabled="!mappingInput.trim()"
-                    @click="saveMapping"
-                  />
-                  <UButton
-                    v-if="mapping"
-                    icon="i-lucide-trash-2"
-                    color="error"
-                    variant="ghost"
-                    size="sm"
-                    :loading="mappingDeleting"
-                    @click="removeMapping"
-                  />
-                </div>
-              </div>
-            </UCard>
-          </div>
+              </UCard>
+            </div>
 
-          <!-- Stat cards -->
-          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <DashboardOverviewCard
-              text="Total Income"
-              :value="counterparty?.stats.totalIncome"
-              currency="EUR"
-              :loading="cpLoading"
-              icon="i-lucide-trending-up"
-              type="CURRENCY"
-            />
-            <DashboardOverviewCard
-              text="Total Outgoing"
-              :value="counterparty ? -counterparty.stats.totalOutgoing : null"
-              currency="EUR"
-              :loading="cpLoading"
-              icon="i-lucide-trending-down"
-              type="CURRENCY"
-            />
-            <DashboardOverviewCard
-              text="Net"
-              :value="counterparty?.stats.net"
-              currency="EUR"
-              :loading="cpLoading"
-              icon="i-lucide-scale"
-              type="CURRENCY"
-            />
-            <DashboardOverviewCard
-              text="Transactions"
-              :value="counterparty?.stats.transactionCount"
-              currency="EUR"
-              :loading="cpLoading"
-              icon="i-lucide-receipt"
-              type="NUMBER"
+            <!-- Stat cards -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <DashboardOverviewCard
+                text="Total Income"
+                :value="counterparty?.stats.totalIncome"
+                currency="EUR"
+                :loading="cpLoading"
+                icon="i-lucide-trending-up"
+                type="CURRENCY"
+              />
+              <DashboardOverviewCard
+                text="Total Outgoing"
+                :value="counterparty ? -counterparty.stats.totalOutgoing : null"
+                currency="EUR"
+                :loading="cpLoading"
+                icon="i-lucide-trending-down"
+                type="CURRENCY"
+              />
+              <DashboardOverviewCard
+                text="Net"
+                :value="counterparty?.stats.net"
+                currency="EUR"
+                :loading="cpLoading"
+                icon="i-lucide-scale"
+                type="CURRENCY"
+              />
+              <DashboardOverviewCard
+                text="Transactions"
+                :value="counterparty?.stats.transactionCount"
+                currency="EUR"
+                :loading="cpLoading"
+                icon="i-lucide-receipt"
+                type="NUMBER"
+              />
+            </div>
+
+            <!-- Transaction table -->
+            <TransactionsTransactionTable
+              :transactions="transactions"
+              :loading="txLoading"
+              :total-elements="txTotalElements"
+              :total-pages="txTotalPages"
+              :current-page="txPage"
+              :page-size="txPageSize"
+              @select="openDetail"
+              @page-change="p => { txPage = p; loadTransactions() }"
             />
           </div>
+        </ClientOnly>
+      </template>
+    </UDashboardPanel>
 
-          <!-- Transaction table -->
-          <TransactionsTransactionTable
-            :transactions="transactions"
-            :loading="txLoading"
-            :total-elements="txTotalElements"
-            :total-pages="txTotalPages"
-            :current-page="txPage"
-            :page-size="txPageSize"
-            @select="openDetail"
-            @page-change="p => { txPage = p; loadTransactions() }"
-          />
-        </div>
-      </ClientOnly>
-    </template>
-  </UDashboardPanel>
-
-  <TransactionsTransactionDetailModal
-    v-model="showDetailModal"
-    :transaction="selectedTransaction"
-    @updated="onTransactionUpdated"
-  />
+    <TransactionsTransactionDetailModal
+      v-model="showDetailModal"
+      :transaction="selectedTransaction"
+      @updated="onTransactionUpdated"
+    />
+  </div>
 </template>

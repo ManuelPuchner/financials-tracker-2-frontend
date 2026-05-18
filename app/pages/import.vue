@@ -6,7 +6,7 @@ useSeoMeta({ title: 'Import CSV — Financials Tracker' })
 const items = [
   { label: 'Trade Republic', slot: 'tr' as const, icon: 'i-lucide-trending-up' },
   { label: 'Sparkasse', slot: 'sparkasse' as const, icon: 'i-lucide-building-2' },
-  { label: 'Bulk CSV', slot: 'bulk' as const, icon: 'i-lucide-table-2' },
+  { label: 'Bulk CSV', slot: 'bulk' as const, icon: 'i-lucide-table-2' }
 ]
 </script>
 
@@ -22,7 +22,10 @@ const items = [
 
     <template #body>
       <div>
-        <UTabs :items="items" class="w-full">
+        <UTabs
+          :items="items"
+          class="w-full"
+        >
           <template #tr>
             <div class="pt-4">
               <ImportCsvImportPanel />

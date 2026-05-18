@@ -10,7 +10,7 @@ export async function fetchCounterparties(params: PageParams = {}, q?: string, i
     page: params.page,
     size: params.size,
     ...(q ? { q } : {}),
-    ...(ibanPrefix ? { ibanPrefix } : {}),
+    ...(ibanPrefix ? { ibanPrefix } : {})
   })
 }
 

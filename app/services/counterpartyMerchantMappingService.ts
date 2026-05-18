@@ -20,5 +20,5 @@ export async function upsertMapping(counterpartyId: number, merchantName: string
 }
 
 export async function deleteMapping(id: number): Promise<void> {
-  return apiDelete<void>(`${BASE}/${id}`)
+  await apiDelete<unknown>(`${BASE}/${id}`)
 }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useCreateTransaction } from '~/composables/useCreateTransaction'
 import { ASSET_CLASSES, CATEGORIES, TRANSACTION_TYPES } from '~/types/transaction'
-import type { AssetClass, Category, TransactionRequest, TransactionType } from '~/types/transaction'
+import type { TransactionRequest } from '~/types/transaction'
 
 const emit = defineEmits<{
   created: []
@@ -23,9 +23,9 @@ const form = ref<TransactionRequest>({
   currency: 'EUR'
 })
 
-const categoryOptions = CATEGORIES.map((c) => ({ label: c, value: c }))
-const typeOptions = TRANSACTION_TYPES.map((t) => ({ label: t.replace(/_/g, ' '), value: t }))
-const assetClassOptions = ASSET_CLASSES.map((a) => ({ label: a, value: a }))
+const categoryOptions = CATEGORIES.map(c => ({ label: c, value: c }))
+const typeOptions = TRANSACTION_TYPES.map(t => ({ label: t.replace(/_/g, ' '), value: t }))
+const assetClassOptions = ASSET_CLASSES.map(a => ({ label: a, value: a }))
 
 const showAssetFields = computed(() =>
   form.value.category === 'TRADING'

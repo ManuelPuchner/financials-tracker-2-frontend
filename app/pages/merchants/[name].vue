@@ -9,7 +9,7 @@ definePageMeta({ layout: 'dashboard' })
 const route = useRoute()
 const name = decodeURIComponent(String(route.params.name))
 
-const { formatCurrency } = useFormatters()
+useFormatters()
 
 // Entity + stats
 const merchant = ref<MerchantResponse | null>(null)
@@ -20,7 +20,7 @@ const accounts = ref<Account[]>([])
 const activeTab = ref('all')
 const tabs = computed(() => [
   { label: 'All Accounts', value: 'all' },
-  ...accounts.value.map(a => ({ label: a.name, value: String(a.id) })),
+  ...accounts.value.map(a => ({ label: a.name, value: String(a.id) }))
 ])
 
 const activeAccountId = computed(() =>
@@ -51,7 +51,7 @@ async function loadTransactions() {
   try {
     const result = await fetchMerchantTransactions(name, activeAccountId.value, {
       page: txPage.value,
-      size: txPageSize,
+      size: txPageSize
     })
     transactions.value = result.content
     txTotalElements.value = result.page.totalElements
@@ -89,92 +89,94 @@ onMounted(async () => {
 </script>
 
 <template>
-  <UDashboardPanel>
-    <template #header>
-      <UDashboardNavbar :title="name">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-        <template #right>
-          <UButton
-            icon="i-lucide-arrow-left"
-            label="Back"
-            variant="ghost"
-            size="sm"
-            @click="navigateTo('/entities?tab=merchants')"
-          />
-        </template>
-      </UDashboardNavbar>
-    </template>
+  <div>
+    <UDashboardPanel>
+      <template #header>
+        <UDashboardNavbar :title="name">
+          <template #leading>
+            <UDashboardSidebarCollapse />
+          </template>
+          <template #right>
+            <UButton
+              icon="i-lucide-arrow-left"
+              label="Back"
+              variant="ghost"
+              size="sm"
+              @click="navigateTo('/entities?tab=merchants')"
+            />
+          </template>
+        </UDashboardNavbar>
+      </template>
 
-    <template #body>
-      <ClientOnly>
-        <div class="flex flex-col gap-6 p-1">
-          <!-- Account tabs -->
-          <UTabs
-            v-model="activeTab"
-            :items="tabs"
-            color="neutral"
-            variant="link"
-            value-key="value"
-            label-key="label"
-          />
+      <template #body>
+        <ClientOnly>
+          <div class="flex flex-col gap-6 p-1">
+            <!-- Account tabs -->
+            <UTabs
+              v-model="activeTab"
+              :items="tabs"
+              color="neutral"
+              variant="link"
+              value-key="value"
+              label-key="label"
+            />
 
-          <!-- Stat cards -->
-          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <DashboardOverviewCard
-              text="Total Income"
-              :value="merchant?.stats.totalIncome"
-              currency="EUR"
-              :loading="mLoading"
-              icon="i-lucide-trending-up"
-              type="CURRENCY"
-            />
-            <DashboardOverviewCard
-              text="Total Outgoing"
-              :value="merchant ? -merchant.stats.totalOutgoing : null"
-              currency="EUR"
-              :loading="mLoading"
-              icon="i-lucide-trending-down"
-              type="CURRENCY"
-            />
-            <DashboardOverviewCard
-              text="Net"
-              :value="merchant?.stats.net"
-              currency="EUR"
-              :loading="mLoading"
-              icon="i-lucide-scale"
-              type="CURRENCY"
-            />
-            <DashboardOverviewCard
-              text="Transactions"
-              :value="merchant?.stats.transactionCount"
-              currency="EUR"
-              :loading="mLoading"
-              icon="i-lucide-receipt"
-              type="NUMBER"
+            <!-- Stat cards -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <DashboardOverviewCard
+                text="Total Income"
+                :value="merchant?.stats.totalIncome"
+                currency="EUR"
+                :loading="mLoading"
+                icon="i-lucide-trending-up"
+                type="CURRENCY"
+              />
+              <DashboardOverviewCard
+                text="Total Outgoing"
+                :value="merchant ? -merchant.stats.totalOutgoing : null"
+                currency="EUR"
+                :loading="mLoading"
+                icon="i-lucide-trending-down"
+                type="CURRENCY"
+              />
+              <DashboardOverviewCard
+                text="Net"
+                :value="merchant?.stats.net"
+                currency="EUR"
+                :loading="mLoading"
+                icon="i-lucide-scale"
+                type="CURRENCY"
+              />
+              <DashboardOverviewCard
+                text="Transactions"
+                :value="merchant?.stats.transactionCount"
+                currency="EUR"
+                :loading="mLoading"
+                icon="i-lucide-receipt"
+                type="NUMBER"
+              />
+            </div>
+
+            <!-- Transaction table -->
+            <TransactionsTransactionTable
+              :transactions="transactions"
+              :loading="txLoading"
+              :total-elements="txTotalElements"
+              :total-pages="txTotalPages"
+              :current-page="txPage"
+              :page-size="txPageSize"
+              @select="openDetail"
+              @page-change="p => { txPage = p; loadTransactions() }"
             />
           </div>
+        </ClientOnly>
+      </template>
+    </UDashboardPanel>
 
-          <!-- Transaction table -->
-          <TransactionsTransactionTable
-            :transactions="transactions"
-            :loading="txLoading"
-            :total-elements="txTotalElements"
-            :total-pages="txTotalPages"
-            :current-page="txPage"
-            :page-size="txPageSize"
-            @select="openDetail"
-            @page-change="p => { txPage = p; loadTransactions() }"
-          />
-        </div>
-      </ClientOnly>
-    </template>
-  </UDashboardPanel>
-
-  <TransactionsTransactionDetailModal
-    v-model="showDetailModal"
-    :transaction="selectedTransaction"
-    @updated="onTransactionUpdated"
-  />
+    <TransactionsTransactionDetailModal
+      v-model="showDetailModal"
+      :transaction="selectedTransaction"
+      @updated="onTransactionUpdated"
+    />
+  </div>
 </template>

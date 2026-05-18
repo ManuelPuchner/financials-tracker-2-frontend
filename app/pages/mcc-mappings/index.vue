@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { fetchMccCodes, setMccCategory } from '~/services/categoryService'
-import { fetchCategories } from '~/services/categoryService'
+import { fetchMccCodes, setMccCategory, fetchCategories } from '~/services/categoryService'
 import type { MccCode, UserCategory } from '~/types/transaction'
 
 definePageMeta({ layout: 'dashboard' })
@@ -100,7 +99,10 @@ onMounted(load)
           v-if="loading"
           class="flex justify-center py-12"
         >
-          <UIcon name="i-lucide-loader-circle" class="size-6 animate-spin text-muted" />
+          <UIcon
+            name="i-lucide-loader-circle"
+            class="size-6 animate-spin text-muted"
+          />
         </div>
 
         <div
@@ -123,7 +125,9 @@ onMounted(load)
               {{ mcc.mcc }}
             </div>
             <div class="flex-1 min-w-0">
-              <div class="text-sm truncate">{{ mcc.description }}</div>
+              <div class="text-sm truncate">
+                {{ mcc.description }}
+              </div>
               <div
                 v-if="mcc.userCategory"
                 class="flex items-center gap-1 mt-0.5"

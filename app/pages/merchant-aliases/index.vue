@@ -80,116 +80,131 @@ onMounted(load)
 </script>
 
 <template>
-  <UDashboardPanel>
-    <template #header>
-      <UDashboardNavbar title="Merchant Aliases">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-        <template #right>
-          <UButton
-            label="New Alias"
-            icon="i-lucide-plus"
-            size="sm"
-            @click="openCreate"
-          />
-        </template>
-      </UDashboardNavbar>
-    </template>
+  <div>
+    <UDashboardPanel>
+      <template #header>
+        <UDashboardNavbar title="Merchant Aliases">
+          <template #leading>
+            <UDashboardSidebarCollapse />
+          </template>
+          <template #right>
+            <UButton
+              label="New Alias"
+              icon="i-lucide-plus"
+              size="sm"
+              @click="openCreate"
+            />
+          </template>
+        </UDashboardNavbar>
+      </template>
 
-    <template #body>
-      <div class="flex flex-col gap-4 max-w-2xl">
-        <p class="text-sm text-muted">
-          Aliases rewrite raw merchant names to a canonical form at import time and retroactively.
-          Use Java regex patterns — e.g. <code class="font-mono">(?i)^mcdonalds</code>.
-        </p>
+      <template #body>
+        <div class="flex flex-col gap-4 max-w-2xl">
+          <p class="text-sm text-muted">
+            Aliases rewrite raw merchant names to a canonical form at import time and retroactively.
+            Use Java regex patterns — e.g. <code class="font-mono">(?i)^mcdonalds</code>.
+          </p>
 
-        <div
-          v-if="loading"
-          class="flex justify-center py-12"
-        >
-          <UIcon name="i-lucide-loader-circle" class="size-6 animate-spin text-muted" />
-        </div>
-
-        <div
-          v-else-if="aliases.length === 0"
-          class="text-muted text-sm py-8 text-center"
-        >
-          No merchant aliases yet.
-        </div>
-
-        <div
-          v-else
-          class="flex flex-col gap-2"
-        >
           <div
-            v-for="alias in aliases"
-            :key="alias.id"
-            class="flex items-center gap-3 px-4 py-3 rounded-lg border border-default bg-background"
+            v-if="loading"
+            class="flex justify-center py-12"
           >
-            <div class="flex-1 min-w-0">
-              <div class="font-mono text-sm truncate">{{ alias.pattern }}</div>
-              <div class="text-sm text-muted mt-0.5">→ <span class="font-medium text-default">{{ alias.canonicalName }}</span></div>
-            </div>
-            <div class="flex items-center gap-1 shrink-0">
-              <UButton
-                icon="i-lucide-pencil"
-                color="neutral"
-                variant="ghost"
-                size="xs"
-                @click="openEdit(alias)"
-              />
-              <UButton
-                icon="i-lucide-trash-2"
-                color="error"
-                variant="ghost"
-                size="xs"
-                @click="handleDelete(alias)"
-              />
+            <UIcon
+              name="i-lucide-loader-circle"
+              class="size-6 animate-spin text-muted"
+            />
+          </div>
+
+          <div
+            v-else-if="aliases.length === 0"
+            class="text-muted text-sm py-8 text-center"
+          >
+            No merchant aliases yet.
+          </div>
+
+          <div
+            v-else
+            class="flex flex-col gap-2"
+          >
+            <div
+              v-for="alias in aliases"
+              :key="alias.id"
+              class="flex items-center gap-3 px-4 py-3 rounded-lg border border-default bg-background"
+            >
+              <div class="flex-1 min-w-0">
+                <div class="font-mono text-sm truncate">
+                  {{ alias.pattern }}
+                </div>
+                <div class="text-sm text-muted mt-0.5">
+                  → <span class="font-medium text-default">{{ alias.canonicalName }}</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-1 shrink-0">
+                <UButton
+                  icon="i-lucide-pencil"
+                  color="neutral"
+                  variant="ghost"
+                  size="xs"
+                  @click="openEdit(alias)"
+                />
+                <UButton
+                  icon="i-lucide-trash-2"
+                  color="error"
+                  variant="ghost"
+                  size="xs"
+                  @click="handleDelete(alias)"
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </template>
-  </UDashboardPanel>
+      </template>
+    </UDashboardPanel>
 
-  <UModal
-    v-model:open="showModal"
-    :title="editingAlias ? 'Edit Alias' : 'New Merchant Alias'"
-  >
-    <template #body>
-      <div class="flex flex-col gap-4">
-        <UFormField label="Pattern (regex)" required>
-          <UInput
-            v-model="form.pattern"
-            placeholder="e.g. (?i)^mcdonalds"
-            class="w-full font-mono"
+    <UModal
+      v-model:open="showModal"
+      :title="editingAlias ? 'Edit Alias' : 'New Merchant Alias'"
+    >
+      <template #body>
+        <div class="flex flex-col gap-4">
+          <UFormField
+            label="Pattern (regex)"
+            required
+          >
+            <UInput
+              v-model="form.pattern"
+              placeholder="e.g. (?i)^mcdonalds"
+              class="w-full font-mono"
+            />
+          </UFormField>
+          <UFormField
+            label="Canonical Name"
+            required
+          >
+            <UInput
+              v-model="form.canonicalName"
+              placeholder="e.g. McDonald's"
+              class="w-full"
+            />
+          </UFormField>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <UButton
+            label="Cancel"
+            color="neutral"
+            variant="outline"
+            @click="showModal = false"
           />
-        </UFormField>
-        <UFormField label="Canonical Name" required>
-          <UInput
-            v-model="form.canonicalName"
-            placeholder="e.g. McDonald's"
-            class="w-full"
+          <UButton
+            :label="editingAlias ? 'Save' : 'Create'"
+            :loading="saving"
+            :disabled="!form.pattern.trim() || !form.canonicalName.trim()"
+            @click="handleSave"
           />
-        </UFormField>
-      </div>
-    </template>
-    <template #footer>
-      <div class="flex justify-end gap-2">
-        <UButton
-          label="Cancel"
-          color="neutral"
-          variant="outline"
-          @click="showModal = false"
-        />
-        <UButton
-          :label="editingAlias ? 'Save' : 'Create'"
-          :loading="saving"
-          :disabled="!form.pattern.trim() || !form.canonicalName.trim()"
-          @click="handleSave"
-        />
-      </div>
-    </template>
-  </UModal>
+        </div>
+      </template>
+    </UModal>
+  </div>
 </template>

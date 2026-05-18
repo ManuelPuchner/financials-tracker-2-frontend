@@ -120,5 +120,5 @@ export async function patchTransaction(
 }
 
 export async function deleteTransaction(transactionId: string): Promise<void> {
-  return apiDelete<void>(`${BASE}/${transactionId}`)
+  await apiDelete<unknown>(`${BASE}/${transactionId}`)
 }

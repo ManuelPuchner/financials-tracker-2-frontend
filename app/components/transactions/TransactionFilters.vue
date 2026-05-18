@@ -9,12 +9,12 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   'update:modelValue': [value: TransactionFilters]
-  reset: []
+  'reset': []
 }>()
 
 const filters = computed({
   get: () => props.modelValue,
-  set: (val) => emit('update:modelValue', val)
+  set: val => emit('update:modelValue', val)
 })
 
 const modeOptions = [
@@ -25,8 +25,8 @@ const modeOptions = [
   { label: 'By MCC Code', value: 'mcc' }
 ]
 
-const categoryOptions = CATEGORIES.map((c) => ({ label: c, value: c }))
-const typeOptions = TRANSACTION_TYPES.map((t) => ({ label: t.replace(/_/g, ' '), value: t }))
+const categoryOptions = CATEGORIES.map(c => ({ label: c, value: c }))
+const typeOptions = TRANSACTION_TYPES.map(t => ({ label: t.replace(/_/g, ' '), value: t }))
 
 const sortOptions = [
   { label: 'Date (newest first)', value: 'date,desc' },
@@ -35,7 +35,7 @@ const sortOptions = [
   { label: 'Amount (lowest first)', value: 'amount,asc' }
 ]
 
-const mccOptions = ref<{ label: string; value: string }[]>([])
+const mccOptions = ref<{ label: string, value: string }[]>([])
 const mccLoading = ref(false)
 
 async function loadMccCodes() {
@@ -43,7 +43,7 @@ async function loadMccCodes() {
   mccLoading.value = true
   try {
     const codes = await fetchMccCodes()
-    mccOptions.value = codes.map((c) => ({
+    mccOptions.value = codes.map(c => ({
       label: `${c.description} (${c.mcc})`,
       value: c.mcc
     }))

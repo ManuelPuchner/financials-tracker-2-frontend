@@ -12,7 +12,7 @@ const {
   overviewLoading,
   portfolioLoading,
   spendingLoading,
-  incomeLoading,
+  incomeLoading
 } = useDashboard()
 </script>
 

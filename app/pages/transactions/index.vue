@@ -63,57 +63,59 @@ onMounted(async () => {
 </script>
 
 <template>
-  <UDashboardPanel>
-    <template #header>
-      <UDashboardNavbar title="Transactions">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-      </UDashboardNavbar>
-    </template>
+  <div>
+    <UDashboardPanel>
+      <template #header>
+        <UDashboardNavbar title="Transactions">
+          <template #leading>
+            <UDashboardSidebarCollapse />
+          </template>
+        </UDashboardNavbar>
+      </template>
 
-    <template #body>
-      <div class="flex flex-col gap-4">
-        <UTabs
-          v-model="activeTab"
-          :items="tabs"
-          color="neutral"
-          variant="link"
-          value-key="value"
-          label-key="label"
-        />
+      <template #body>
+        <div class="flex flex-col gap-4">
+          <UTabs
+            v-model="activeTab"
+            :items="tabs"
+            color="neutral"
+            variant="link"
+            value-key="value"
+            label-key="label"
+          />
 
-        <TransactionsTransactionFilters
-          v-model="filters"
-          @reset="resetFilters"
-        />
+          <TransactionsTransactionFilters
+            v-model="filters"
+            @reset="resetFilters"
+          />
 
-        <UAlert
-          v-if="error"
-          :title="error"
-          color="error"
-          variant="subtle"
-          icon="i-lucide-alert-circle"
-        />
+          <UAlert
+            v-if="error"
+            :title="error"
+            color="error"
+            variant="subtle"
+            icon="i-lucide-alert-circle"
+          />
 
-        <TransactionsTransactionTable
-          :transactions="transactions"
-          :loading="loading"
-          :total-elements="totalElements"
-          :total-pages="totalPages"
-          :current-page="filters.page"
-          :page-size="filters.size"
-          @select="openDetail"
-          @page-change="goToPage"
-        />
-      </div>
-    </template>
-  </UDashboardPanel>
+          <TransactionsTransactionTable
+            :transactions="transactions"
+            :loading="loading"
+            :total-elements="totalElements"
+            :total-pages="totalPages"
+            :current-page="filters.page"
+            :page-size="filters.size"
+            @select="openDetail"
+            @page-change="goToPage"
+          />
+        </div>
+      </template>
+    </UDashboardPanel>
 
-  <TransactionsTransactionDetailModal
-    v-model="showDetailModal"
-    :transaction="selectedTransaction"
-    @updated="onTransactionUpdated"
-    @deleted="onTransactionDeleted"
-  />
+    <TransactionsTransactionDetailModal
+      v-model="showDetailModal"
+      :transaction="selectedTransaction"
+      @updated="onTransactionUpdated"
+      @deleted="onTransactionDeleted"
+    />
+  </div>
 </template>

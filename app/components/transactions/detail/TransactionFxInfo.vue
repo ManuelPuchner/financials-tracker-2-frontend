@@ -6,7 +6,9 @@ defineProps<{ fxInfo: FxInfo }>()
 
 <template>
   <div>
-    <p class="text-xs text-muted uppercase tracking-wide mb-2">Foreign Exchange</p>
+    <p class="text-xs text-muted uppercase tracking-wide mb-2">
+      Foreign Exchange
+    </p>
     <div class="grid grid-cols-2 gap-x-8 gap-y-2">
       <div class="flex flex-col gap-0.5">
         <span class="text-xs text-muted">Original Amount</span>

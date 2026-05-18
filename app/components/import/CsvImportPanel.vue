@@ -74,7 +74,7 @@ function handleReset() {
         accept=".csv"
         class="hidden"
         @change="onFileChange"
-      />
+      >
       <UIcon
         name="i-lucide-upload-cloud"
         class="size-12 text-muted"

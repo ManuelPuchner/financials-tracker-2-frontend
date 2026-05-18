@@ -2,7 +2,7 @@
 import type { TableColumn } from '@nuxt/ui'
 import type { TransactionResponse } from '~/types/transaction'
 
-const props = defineProps<{
+defineProps<{
   transactions: TransactionResponse[]
   loading: boolean
   totalElements: number
@@ -66,12 +66,12 @@ function formatDate(dateStr: string): string {
             class="flex items-center gap-1.5"
           >
             <UIcon
-                v-if="row.original.userCategory.icon"
-                
-                :name="`i-lucide-${row.original.userCategory.icon}`"
-                class="size-4 text-muted"
-                :style="{ color: row.original.userCategory.color }"
-              />
+              v-if="row.original.userCategory.icon"
+
+              :name="`i-lucide-${row.original.userCategory.icon}`"
+              class="size-4 text-muted"
+              :style="{ color: row.original.userCategory.color }"
+            />
             <span class="text-sm truncate max-w-28">{{ row.original.userCategory.name }}</span>
           </div>
           <span

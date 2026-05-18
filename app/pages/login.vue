@@ -28,12 +28,18 @@ async function handleLogin() {
     <UCard class="w-full max-w-sm">
       <template #header>
         <div class="flex items-center gap-2">
-          <UIcon name="i-lucide-trending-up" class="size-6 text-primary" />
+          <UIcon
+            name="i-lucide-trending-up"
+            class="size-6 text-primary"
+          />
           <span class="font-semibold text-lg">Financials Tracker</span>
         </div>
       </template>
 
-      <UForm class="space-y-4" @submit.prevent="handleLogin">
+      <UForm
+        class="space-y-4"
+        @submit.prevent="handleLogin"
+      >
         <UFormField label="Username">
           <UInput
             v-model="username"

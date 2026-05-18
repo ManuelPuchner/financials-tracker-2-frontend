@@ -6,7 +6,7 @@ export function useSearch() {
   const searchTerm = ref('')
   const loading = ref(false)
 
-  const groups = ref<any[]>([])
+  const groups = ref<Record<string, unknown>[]>([])
 
   let debounceTimer: ReturnType<typeof setTimeout> | null = null
 
@@ -21,7 +21,7 @@ export function useSearch() {
       const [merchantsResult, counterpartiesResult, assetsResult] = await Promise.all([
         fetchMerchants({ page: 0, size: 5 }, q),
         fetchCounterparties({ page: 0, size: 5 }, q),
-        fetchAssets({ page: 0, size: 5 }, q),
+        fetchAssets({ page: 0, size: 5 }, q)
       ])
 
       const newGroups = []
@@ -33,8 +33,8 @@ export function useSearch() {
           items: merchantsResult.content.map(m => ({
             label: m.name,
             icon: 'i-lucide-store',
-            onSelect: () => navigateTo(`/merchants/${encodeURIComponent(m.name)}`),
-          })),
+            onSelect: () => navigateTo(`/merchants/${encodeURIComponent(m.name)}`)
+          }))
         })
       }
 
@@ -46,8 +46,8 @@ export function useSearch() {
             label: c.name ?? c.iban,
             suffix: c.name ? c.iban : undefined,
             icon: 'i-lucide-users',
-            onSelect: () => navigateTo(`/counterparties/${c.id}`),
-          })),
+            onSelect: () => navigateTo(`/counterparties/${c.id}`)
+          }))
         })
       }
 
@@ -59,8 +59,8 @@ export function useSearch() {
             label: a.name,
             suffix: a.symbol,
             icon: 'i-lucide-chart-candlestick',
-            onSelect: () => navigateTo(`/assets/${a.id}`),
-          })),
+            onSelect: () => navigateTo(`/assets/${a.id}`)
+          }))
         })
       }
 

@@ -70,7 +70,7 @@ export async function apiPost<T>(path: string, body: unknown): Promise<T> {
   const response = await fetch(API_BASE + path, {
     method: 'POST',
     headers: {
-      Accept: 'application/json',
+      'Accept': 'application/json',
       'Content-Type': 'application/json',
       ...authHeaders()
     },
@@ -83,7 +83,7 @@ export async function apiPut<T>(path: string, body: unknown): Promise<T> {
   const response = await fetch(API_BASE + path, {
     method: 'PUT',
     headers: {
-      Accept: 'application/json',
+      'Accept': 'application/json',
       'Content-Type': 'application/json',
       ...authHeaders()
     },
@@ -96,7 +96,7 @@ export async function apiPatch<T>(path: string, body: unknown): Promise<T> {
   const response = await fetch(API_BASE + path, {
     method: 'PATCH',
     headers: {
-      Accept: 'application/json',
+      'Accept': 'application/json',
       'Content-Type': 'application/json',
       ...authHeaders()
     },

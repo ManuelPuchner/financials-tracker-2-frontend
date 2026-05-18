@@ -86,7 +86,7 @@ function handleReset() {
         accept=".json"
         class="hidden"
         @change="onFileChange"
-      />
+      >
       <UIcon
         name="i-lucide-upload-cloud"
         class="size-12 text-muted"

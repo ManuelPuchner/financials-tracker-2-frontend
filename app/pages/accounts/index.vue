@@ -60,120 +60,133 @@ onMounted(load)
 </script>
 
 <template>
-  <UDashboardPanel>
-    <template #header>
-      <UDashboardNavbar title="Accounts">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-      </UDashboardNavbar>
-    </template>
+  <div>
+    <UDashboardPanel>
+      <template #header>
+        <UDashboardNavbar title="Accounts">
+          <template #leading>
+            <UDashboardSidebarCollapse />
+          </template>
+        </UDashboardNavbar>
+      </template>
 
-    <template #body>
-      <div class="flex flex-col gap-4 max-w-2xl">
-        <div
-          v-if="loading"
-          class="flex justify-center py-12"
-        >
-          <UIcon name="i-lucide-loader-circle" class="size-6 animate-spin text-muted" />
-        </div>
-
-        <div
-          v-else-if="accounts.length === 0"
-          class="text-muted text-sm py-8 text-center"
-        >
-          No accounts found. Accounts are created automatically on import.
-        </div>
-
-        <div
-          v-else
-          class="flex flex-col gap-2"
-        >
+      <template #body>
+        <div class="flex flex-col gap-4 max-w-2xl">
           <div
-            v-for="account in accounts"
-            :key="account.id"
-            class="flex items-center gap-3 px-4 py-3 rounded-lg border border-default bg-background"
+            v-if="loading"
+            class="flex justify-center py-12"
           >
-            <span
-              class="size-4 rounded-full shrink-0"
-              :style="{ backgroundColor: account.color ?? '#888' }"
+            <UIcon
+              name="i-lucide-loader-circle"
+              class="size-6 animate-spin text-muted"
             />
-            <div class="flex-1 min-w-0">
-              <div class="font-medium truncate">{{ account.name }}</div>
-              <div class="text-xs text-muted flex items-center gap-2">
-                <span>{{ account.source }}</span>
-                <span v-if="account.ownAccountIban" class="font-mono">{{ account.ownAccountIban }}</span>
+          </div>
+
+          <div
+            v-else-if="accounts.length === 0"
+            class="text-muted text-sm py-8 text-center"
+          >
+            No accounts found. Accounts are created automatically on import.
+          </div>
+
+          <div
+            v-else
+            class="flex flex-col gap-2"
+          >
+            <div
+              v-for="account in accounts"
+              :key="account.id"
+              class="flex items-center gap-3 px-4 py-3 rounded-lg border border-default bg-background"
+            >
+              <span
+                class="size-4 rounded-full shrink-0"
+                :style="{ backgroundColor: account.color ?? '#888' }"
+              />
+              <div class="flex-1 min-w-0">
+                <div class="font-medium truncate">
+                  {{ account.name }}
+                </div>
+                <div class="text-xs text-muted flex items-center gap-2">
+                  <span>{{ account.source }}</span>
+                  <span
+                    v-if="account.ownAccountIban"
+                    class="font-mono"
+                  >{{ account.ownAccountIban }}</span>
+                </div>
               </div>
+              <UBadge
+                :label="account.source"
+                color="neutral"
+                variant="subtle"
+                size="xs"
+              />
+              <UButton
+                icon="i-lucide-pencil"
+                color="neutral"
+                variant="ghost"
+                size="xs"
+                @click="openEdit(account)"
+              />
             </div>
-            <UBadge
-              :label="account.source"
-              color="neutral"
-              variant="subtle"
-              size="xs"
-            />
-            <UButton
-              icon="i-lucide-pencil"
-              color="neutral"
-              variant="ghost"
-              size="xs"
-              @click="openEdit(account)"
-            />
           </div>
         </div>
-      </div>
-    </template>
-  </UDashboardPanel>
+      </template>
+    </UDashboardPanel>
 
-  <UModal
-    v-model:open="showModal"
-    title="Edit Account"
-  >
-    <template #body>
-      <div class="flex flex-col gap-4">
-        <UFormField label="Name" required>
-          <UInput
-            v-model="form.name"
-            placeholder="e.g. Hauptkonto"
-            class="w-full"
-          />
-        </UFormField>
-        <UFormField label="Color">
-          <div class="flex items-center gap-2">
-            <input
-              v-model="form.color"
-              type="color"
-              class="size-9 rounded cursor-pointer border border-default"
-            />
+    <UModal
+      v-model:open="showModal"
+      title="Edit Account"
+    >
+      <template #body>
+        <div class="flex flex-col gap-4">
+          <UFormField
+            label="Name"
+            required
+          >
             <UInput
-              v-model="form.color"
-              placeholder="#3b82f6"
-              class="flex-1 font-mono"
+              v-model="form.name"
+              placeholder="e.g. Hauptkonto"
+              class="w-full"
             />
-          </div>
-        </UFormField>
-        <UFormField label="Icon">
-          <UInput
-            v-model="form.icon"
-            placeholder="e.g. bank"
+          </UFormField>
+          <UFormField label="Color">
+            <div class="flex items-center gap-2">
+              <input
+                v-model="form.color"
+                type="color"
+                class="size-9 rounded cursor-pointer border border-default"
+              >
+              <UInput
+                v-model="form.color"
+                placeholder="#3b82f6"
+                class="flex-1 font-mono"
+              />
+            </div>
+          </UFormField>
+          <UFormField label="Icon">
+            <UInput
+              v-model="form.icon"
+              placeholder="e.g. bank"
+            />
+          </UFormField>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <UButton
+            label="Cancel"
+            color="neutral"
+            variant="outline"
+            @click="showModal = false"
           />
-        </UFormField>
-      </div>
-    </template>
-    <template #footer>
-      <div class="flex justify-end gap-2">
-        <UButton
-          label="Cancel"
-          color="neutral"
-          variant="outline"
-          @click="showModal = false"
-        />
-        <UButton
-          label="Save"
-          :loading="saving"
-          :disabled="!form.name?.trim()"
-          @click="handleSave"
-        />
-      </div>
-    </template>
-  </UModal>
+          <UButton
+            label="Save"
+            :loading="saving"
+            :disabled="!form.name?.trim()"
+            @click="handleSave"
+          />
+        </div>
+      </template>
+    </UModal>
+  </div>
 </template>

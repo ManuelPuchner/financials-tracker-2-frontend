@@ -30,7 +30,7 @@ const searchItems = computed(() => {
     label: c.name ? `${c.name} — ${c.iban}` : c.iban,
     value: String(c.id),
     iban: c.iban,
-    name: c.name ?? c.iban,
+    name: c.name ?? c.iban
   }))
 })
 
@@ -91,7 +91,7 @@ function confirmNew() {
       label: iban ? `${newName.value.trim()} — ${iban}` : newName.value.trim(),
       value: '__new__',
       iban,
-      name: newName.value.trim(),
+      name: newName.value.trim()
     }
   }
   searchTerm.value = selectedItem.value!.label
@@ -136,7 +136,7 @@ const form = reactive({
   amount: undefined as number | undefined,
   currency: 'EUR',
   description: '',
-  userCategoryId: undefined as number | undefined,
+  userCategoryId: undefined as number | undefined
 })
 
 const submitting = ref(false)
@@ -171,9 +171,9 @@ async function handleSubmit() {
       ? { merchantName: selectedItem.value.label }
       : {
           counterpartyName: selectedItem.value.name ?? selectedItem.value.label,
-          counterpartyIban: selectedItem.value.iban || undefined,
+          counterpartyIban: selectedItem.value.iban || undefined
         }
-    ),
+    )
   }
 
   submitting.value = true
@@ -210,214 +210,259 @@ function resetForm() {
 </script>
 
 <template>
-  <UDashboardPanel>
-    <template #header>
-      <UDashboardNavbar title="Bargeld">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-      </UDashboardNavbar>
-    </template>
+  <div>
+    <UDashboardPanel>
+      <template #header>
+        <UDashboardNavbar title="Bargeld">
+          <template #leading>
+            <UDashboardSidebarCollapse />
+          </template>
+        </UDashboardNavbar>
+      </template>
 
-    <template #body>
-      <div class="max-w-xl">
-        <UCard>
-          <div class="flex flex-col gap-6">
-            <!-- Mode toggle -->
-            <div class="flex rounded-lg border border-default overflow-hidden">
-              <button
-                class="flex flex-1 items-center justify-center gap-2 px-4 py-2 text-sm font-medium transition-colors"
-                :class="mode === 'merchant' ? 'bg-primary text-white' : 'text-muted hover:bg-elevated'"
-                @click="mode = 'merchant'"
-              >
-                <UIcon name="i-lucide-store" class="size-4" />
-                Merchant
-              </button>
-              <div class="w-px bg-default" />
-              <button
-                class="flex flex-1 items-center justify-center gap-2 px-4 py-2 text-sm font-medium transition-colors"
-                :class="mode === 'counterparty' ? 'bg-primary text-white' : 'text-muted hover:bg-elevated'"
-                @click="mode = 'counterparty'"
-              >
-                <UIcon name="i-lucide-user" class="size-4" />
-                Counterparty
-              </button>
-            </div>
-
-            <USeparator />
-
-            <!-- Merchant / counterparty selector -->
-            <UFormField :label="mode === 'merchant' ? 'Merchant' : 'Counterparty'" required>
-              <div class="flex gap-2">
-                <UInputMenu
-                  v-model="selectedItem"
-                  v-model:search-term="searchTerm"
-                  :items="searchItems"
-                  :loading="searchLoading"
-                  label-key="label"
-                  :placeholder="`Search ${mode === 'merchant' ? 'merchant' : 'counterparty'}…`"
-                  class="flex-1"
-                />
-                <UTooltip :text="`Add new ${mode === 'merchant' ? 'merchant' : 'counterparty'}`">
-                  <UButton
-                    icon="i-lucide-plus"
-                    color="neutral"
-                    variant="outline"
-                    @click="openNewModal"
+      <template #body>
+        <div class="max-w-xl">
+          <UCard>
+            <div class="flex flex-col gap-6">
+              <!-- Mode toggle -->
+              <div class="flex rounded-lg border border-default overflow-hidden">
+                <button
+                  class="flex flex-1 items-center justify-center gap-2 px-4 py-2 text-sm font-medium transition-colors"
+                  :class="mode === 'merchant' ? 'bg-primary text-white' : 'text-muted hover:bg-elevated'"
+                  @click="mode = 'merchant'"
+                >
+                  <UIcon
+                    name="i-lucide-store"
+                    class="size-4"
                   />
-                </UTooltip>
+                  Merchant
+                </button>
+                <div class="w-px bg-default" />
+                <button
+                  class="flex flex-1 items-center justify-center gap-2 px-4 py-2 text-sm font-medium transition-colors"
+                  :class="mode === 'counterparty' ? 'bg-primary text-white' : 'text-muted hover:bg-elevated'"
+                  @click="mode = 'counterparty'"
+                >
+                  <UIcon
+                    name="i-lucide-user"
+                    class="size-4"
+                  />
+                  Counterparty
+                </button>
               </div>
 
-            </UFormField>
+              <USeparator />
 
-            <!-- Selected indicator — outside the form field so it has full card width -->
-            <div
-              v-if="selectedItem"
-              class="flex items-center gap-3 px-4 py-3 rounded-lg bg-success/10 border border-success/20"
-            >
-              <UIcon name="i-lucide-check-circle" class="size-5 text-success shrink-0" />
-              <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium">{{ selectedItem.name ?? selectedItem.label }}</p>
-                <p v-if="selectedItem.iban" class="text-xs text-muted font-mono mt-0.5">{{ selectedItem.iban }}</p>
-              </div>
-              <UButton
-                icon="i-lucide-x"
-                size="xs"
-                color="neutral"
-                variant="ghost"
-                @click="selectedItem = null; searchTerm = ''"
-              />
-            </div>
-
-            <!-- Date + Amount + Currency row -->
-            <div class="grid grid-cols-5 gap-3">
-              <UFormField label="Date" required class="col-span-2">
-                <UInput
-                  v-model="form.date"
-                  type="date"
-                  class="w-full"
-                />
-              </UFormField>
-              <UFormField label="Amount" required class="col-span-2">
-                <div class="flex rounded-lg border border-default overflow-hidden">
-                  <button
-                    class="flex items-center justify-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors border-r border-default"
-                    :class="direction === 'outgoing' ? 'bg-error/15 text-error' : 'text-muted hover:bg-elevated'"
-                    @click="direction = 'outgoing'"
-                  >
-                    <UIcon name="i-lucide-arrow-up" class="size-3.5" />
-                    Out
-                  </button>
-                  <button
-                    class="flex items-center justify-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors border-r border-default"
-                    :class="direction === 'incoming' ? 'bg-success/15 text-success' : 'text-muted hover:bg-elevated'"
-                    @click="direction = 'incoming'"
-                  >
-                    <UIcon name="i-lucide-arrow-down" class="size-3.5" />
-                    In
-                  </button>
-                  <input
-                    v-model.number="form.amount"
-                    type="number"
-                    step="0.01"
-                    placeholder="12.50"
-                    class="flex-1 min-w-0 bg-transparent px-3 py-1.5 text-sm outline-none placeholder:text-muted"
+              <!-- Merchant / counterparty selector -->
+              <UFormField
+                :label="mode === 'merchant' ? 'Merchant' : 'Counterparty'"
+                required
+              >
+                <div class="flex gap-2">
+                  <UInputMenu
+                    v-model="selectedItem"
+                    v-model:search-term="searchTerm"
+                    :items="searchItems"
+                    :loading="searchLoading"
+                    label-key="label"
+                    :placeholder="`Search ${mode === 'merchant' ? 'merchant' : 'counterparty'}…`"
+                    class="flex-1"
                   />
+                  <UTooltip :text="`Add new ${mode === 'merchant' ? 'merchant' : 'counterparty'}`">
+                    <UButton
+                      icon="i-lucide-plus"
+                      color="neutral"
+                      variant="outline"
+                      @click="openNewModal"
+                    />
+                  </UTooltip>
                 </div>
               </UFormField>
-              <UFormField label="Currency">
-                <UInput
-                  v-model="form.currency"
-                  placeholder="EUR"
-                  maxlength="3"
-                  class="w-full font-mono"
+
+              <!-- Selected indicator — outside the form field so it has full card width -->
+              <div
+                v-if="selectedItem"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg bg-success/10 border border-success/20"
+              >
+                <UIcon
+                  name="i-lucide-check-circle"
+                  class="size-5 text-success shrink-0"
                 />
-              </UFormField>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium">
+                    {{ selectedItem.name ?? selectedItem.label }}
+                  </p>
+                  <p
+                    v-if="selectedItem.iban"
+                    class="text-xs text-muted font-mono mt-0.5"
+                  >
+                    {{ selectedItem.iban }}
+                  </p>
+                </div>
+                <UButton
+                  icon="i-lucide-x"
+                  size="xs"
+                  color="neutral"
+                  variant="ghost"
+                  @click="selectedItem = null; searchTerm = ''"
+                />
+              </div>
+
+              <!-- Date + Amount + Currency row -->
+              <div class="grid grid-cols-5 gap-3">
+                <UFormField
+                  label="Date"
+                  required
+                  class="col-span-2"
+                >
+                  <UInput
+                    v-model="form.date"
+                    type="date"
+                    class="w-full"
+                  />
+                </UFormField>
+                <UFormField
+                  label="Amount"
+                  required
+                  class="col-span-2"
+                >
+                  <div class="flex rounded-lg border border-default overflow-hidden">
+                    <button
+                      class="flex items-center justify-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors border-r border-default"
+                      :class="direction === 'outgoing' ? 'bg-error/15 text-error' : 'text-muted hover:bg-elevated'"
+                      @click="direction = 'outgoing'"
+                    >
+                      <UIcon
+                        name="i-lucide-arrow-up"
+                        class="size-3.5"
+                      />
+                      Out
+                    </button>
+                    <button
+                      class="flex items-center justify-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors border-r border-default"
+                      :class="direction === 'incoming' ? 'bg-success/15 text-success' : 'text-muted hover:bg-elevated'"
+                      @click="direction = 'incoming'"
+                    >
+                      <UIcon
+                        name="i-lucide-arrow-down"
+                        class="size-3.5"
+                      />
+                      In
+                    </button>
+                    <input
+                      v-model.number="form.amount"
+                      type="number"
+                      step="0.01"
+                      placeholder="12.50"
+                      class="flex-1 min-w-0 bg-transparent px-3 py-1.5 text-sm outline-none placeholder:text-muted"
+                    >
+                  </div>
+                </UFormField>
+                <UFormField label="Currency">
+                  <UInput
+                    v-model="form.currency"
+                    placeholder="EUR"
+                    maxlength="3"
+                    class="w-full font-mono"
+                  />
+                </UFormField>
+              </div>
+
+              <!-- Account + Category + Description row -->
+              <div class="grid grid-cols-3 gap-3">
+                <UFormField
+                  label="Account"
+                  required
+                >
+                  <USelect
+                    v-model="selectedAccount"
+                    :items="accountOptions"
+                    value-key="value"
+                    label-key="label"
+                    class="w-full"
+                  />
+                </UFormField>
+                <UFormField label="Category">
+                  <USelect
+                    v-model="form.userCategoryId"
+                    :items="categoryOptions"
+                    value-key="value"
+                    label-key="label"
+                    placeholder="None"
+                    class="w-full"
+                  />
+                </UFormField>
+                <UFormField label="Description">
+                  <UInput
+                    v-model="form.description"
+                    placeholder="Optional note…"
+                    class="w-full"
+                  />
+                </UFormField>
+              </div>
+
+              <USeparator />
+
+              <!-- Submit -->
+              <UButton
+                label="Create Transaction"
+                icon="i-lucide-banknote"
+                :loading="submitting"
+                size="lg"
+                class="w-full justify-center"
+                @click="handleSubmit"
+              />
             </div>
+          </UCard>
+        </div>
+      </template>
+    </UDashboardPanel>
 
-            <!-- Account + Category + Description row -->
-            <div class="grid grid-cols-3 gap-3">
-              <UFormField label="Account" required>
-                <USelect
-                  v-model="selectedAccount"
-                  :items="accountOptions"
-                  value-key="value"
-                  label-key="label"
-                  class="w-full"
-                />
-              </UFormField>
-              <UFormField label="Category">
-                <USelect
-                  v-model="form.userCategoryId"
-                  :items="categoryOptions"
-                  value-key="value"
-                  label-key="label"
-                  placeholder="None"
-                  class="w-full"
-                />
-              </UFormField>
-              <UFormField label="Description">
-                <UInput
-                  v-model="form.description"
-                  placeholder="Optional note…"
-                  class="w-full"
-                />
-              </UFormField>
-            </div>
-
-            <USeparator />
-
-            <!-- Submit -->
-            <UButton
-              label="Create Transaction"
-              icon="i-lucide-banknote"
-              :loading="submitting"
-              size="lg"
-              class="w-full justify-center"
-              @click="handleSubmit"
+    <!-- New merchant / counterparty modal -->
+    <UModal
+      v-model:open="showNewModal"
+      :title="`Add New ${mode === 'merchant' ? 'Merchant' : 'Counterparty'}`"
+    >
+      <template #body>
+        <div class="flex flex-col gap-4">
+          <UFormField
+            label="Name"
+            required
+          >
+            <UInput
+              v-model="newName"
+              placeholder="e.g. Billa"
+              class="w-full"
+              autofocus
             />
-          </div>
-        </UCard>
-      </div>
-    </template>
-  </UDashboardPanel>
-
-  <!-- New merchant / counterparty modal -->
-  <UModal
-    v-model:open="showNewModal"
-    :title="`Add New ${mode === 'merchant' ? 'Merchant' : 'Counterparty'}`"
-  >
-    <template #body>
-      <div class="flex flex-col gap-4">
-        <UFormField label="Name" required>
-          <UInput
-            v-model="newName"
-            placeholder="e.g. Billa"
-            class="w-full"
-            autofocus
+          </UFormField>
+          <UFormField
+            v-if="mode === 'counterparty'"
+            label="IBAN"
+          >
+            <UInput
+              v-model="newIban"
+              placeholder="AT83…"
+              class="w-full font-mono"
+            />
+          </UFormField>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <UButton
+            label="Cancel"
+            color="neutral"
+            variant="outline"
+            @click="showNewModal = false"
           />
-        </UFormField>
-        <UFormField
-          v-if="mode === 'counterparty'"
-          label="IBAN"
-        >
-          <UInput
-            v-model="newIban"
-            placeholder="AT83…"
-            class="w-full font-mono"
+          <UButton
+            label="Add"
+            :disabled="!newName.trim()"
+            @click="confirmNew"
           />
-        </UFormField>
-      </div>
-    </template>
-    <template #footer>
-      <div class="flex justify-end gap-2">
-        <UButton label="Cancel" color="neutral" variant="outline" @click="showNewModal = false" />
-        <UButton
-          label="Add"
-          :disabled="!newName.trim()"
-          @click="confirmNew"
-        />
-      </div>
-    </template>
-  </UModal>
+        </div>
+      </template>
+    </UModal>
+  </div>
 </template>

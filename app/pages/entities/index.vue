@@ -14,7 +14,7 @@ const activeTab = ref('counterparties')
 const entityTabs = [
   { label: 'Counterparties', value: 'counterparties' },
   { label: 'Merchants', value: 'merchants' },
-  { label: 'Assets', value: 'assets' },
+  { label: 'Assets', value: 'assets' }
 ]
 
 // --- Counterparties ---
@@ -30,7 +30,7 @@ const cpFilter = ref<CpFilter>('all')
 const cpFilterItems: { label: string, value: CpFilter }[] = [
   { label: 'All', value: 'all' },
   { label: 'Bank', value: 'bank' },
-  { label: 'Cash', value: 'cash' },
+  { label: 'Cash', value: 'cash' }
 ]
 
 const cpIbanPrefix = computed<string | undefined>(() => {
@@ -38,7 +38,10 @@ const cpIbanPrefix = computed<string | undefined>(() => {
   return undefined
 })
 
-watch(cpFilter, () => { cpPage.value = 0; loadCounterparties() })
+watch(cpFilter, () => {
+  cpPage.value = 0
+  loadCounterparties()
+})
 
 async function loadCounterparties() {
   cpLoading.value = true
@@ -63,7 +66,7 @@ const counterpartyColumns: TableColumn<CounterpartyResponse>[] = [
   { id: 'outgoing', header: 'Outgoing' },
   { id: 'net', header: 'Net' },
   { id: 'count', header: 'Transactions' },
-  { id: 'actions', header: '' },
+  { id: 'actions', header: '' }
 ]
 
 // --- Merchants ---
@@ -92,7 +95,7 @@ const merchantColumns: TableColumn<MerchantResponse>[] = [
   { id: 'outgoing', header: 'Outgoing' },
   { id: 'net', header: 'Net' },
   { id: 'count', header: 'Transactions' },
-  { id: 'actions', header: '' },
+  { id: 'actions', header: '' }
 ]
 
 // --- Assets ---
@@ -123,7 +126,7 @@ const assetColumns: TableColumn<AssetResponse>[] = [
   { id: 'outgoing', header: 'Outgoing' },
   { id: 'net', header: 'Net' },
   { id: 'count', header: 'Transactions' },
-  { id: 'actions', header: '' },
+  { id: 'actions', header: '' }
 ]
 
 onMounted(() => {
@@ -269,7 +272,11 @@ onMounted(() => {
               {{ row.original.name }}
             </template>
             <template #assetClass-cell="{ row }">
-              <UBadge :label="row.original.assetClass" variant="subtle" size="sm" />
+              <UBadge
+                :label="row.original.assetClass"
+                variant="subtle"
+                size="sm"
+              />
             </template>
             <template #income-cell="{ row }">
               <span class="text-success">{{ formatCurrency(row.original.stats.totalIncome) }}</span>

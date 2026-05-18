@@ -20,7 +20,7 @@ export async function updateCategory(id: number, request: UserCategoryRequest): 
 }
 
 export async function deleteCategory(id: number): Promise<void> {
-  return apiDelete<void>(`${BASE}/${id}`)
+  await apiDelete<unknown>(`${BASE}/${id}`)
 }
 
 export async function fetchMccCodes(mapped?: boolean): Promise<MccCode[]> {
