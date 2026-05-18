@@ -78,12 +78,8 @@ async function handleDelete() {
 
 function formatDateTime(dt: string): string {
   return new Date(dt).toLocaleString('de-AT', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit'
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit'
   })
 }
 
@@ -101,10 +97,8 @@ function formatAmount(value: number | null | undefined, currency: string): strin
     class="sm:max-w-2xl"
   >
     <template #body>
-      <div
-        v-if="transaction"
-        class="flex flex-col gap-6"
-      >
+      <div v-if="transaction" class="flex flex-col gap-6">
+        <!-- Core fields -->
         <div class="grid grid-cols-2 gap-x-8 gap-y-3">
           <div class="flex flex-col gap-0.5">
             <span class="text-xs text-muted uppercase tracking-wide">Source</span>
@@ -120,10 +114,7 @@ function formatAmount(value: number | null | undefined, currency: string): strin
           </div>
           <div class="flex flex-col gap-0.5">
             <span class="text-xs text-muted uppercase tracking-wide">Amount</span>
-            <TransactionsTransactionAmountBadge
-              :amount="transaction.amount"
-              :currency="transaction.currency"
-            />
+            <TransactionsTransactionAmountBadge :amount="transaction.amount" :currency="transaction.currency" />
           </div>
           <div class="flex flex-col gap-0.5">
             <span class="text-xs text-muted uppercase tracking-wide">Fee</span>
@@ -137,10 +128,7 @@ function formatAmount(value: number | null | undefined, currency: string): strin
             <span class="text-xs text-muted uppercase tracking-wide">Account Type</span>
             <span class="text-sm">{{ transaction.accountType }}</span>
           </div>
-          <div
-            v-if="transaction.account"
-            class="flex flex-col gap-0.5"
-          >
+          <div v-if="transaction.account" class="flex flex-col gap-0.5">
             <span class="text-xs text-muted uppercase tracking-wide">Account</span>
             <div class="flex items-center gap-1.5">
               <span
@@ -153,32 +141,19 @@ function formatAmount(value: number | null | undefined, currency: string): strin
           </div>
         </div>
 
+        <!-- Edit: category + note -->
         <USeparator />
         <div class="flex flex-col gap-3">
           <div class="flex flex-col gap-2">
             <span class="text-xs text-muted uppercase tracking-wide">User Category</span>
-            <USelectMenu
-              v-model="selectedCategoryId"
-              :items="categoryOptions"
-              value-key="value"
-              label-key="label"
-              portal
-            />
+            <USelectMenu v-model="selectedCategoryId" :items="categoryOptions" value-key="value" label-key="label" portal />
           </div>
           <div class="flex flex-col gap-2">
             <span class="text-xs text-muted uppercase tracking-wide">Note</span>
-            <UInput
-              v-model="editNote"
-              placeholder="Add a note…"
-            />
+            <UInput v-model="editNote" placeholder="Add a note…" />
           </div>
           <div class="flex justify-end">
-            <UButton
-              label="Save changes"
-              size="sm"
-              :loading="saving"
-              @click="handleSave"
-            />
+            <UButton label="Save changes" size="sm" :loading="saving" @click="handleSave" />
           </div>
         </div>
 
@@ -190,141 +165,53 @@ function formatAmount(value: number | null | undefined, currency: string): strin
           </div>
         </template>
 
-        <template v-if="transaction.assetInfo">
-          <USeparator />
-          <div>
-            <p class="text-xs text-muted uppercase tracking-wide mb-2">Asset</p>
-            <div class="grid grid-cols-2 gap-x-8 gap-y-2">
-              <div class="flex flex-col gap-0.5">
-                <span class="text-xs text-muted">Name</span>
-                <span class="text-sm font-medium">{{ transaction.assetInfo.name }}</span>
-              </div>
-              <div class="flex flex-col gap-0.5">
-                <span class="text-xs text-muted">Symbol</span>
-                <span class="text-sm font-mono">{{ transaction.assetInfo.symbol }}</span>
-              </div>
-              <div class="flex flex-col gap-0.5">
-                <span class="text-xs text-muted">Class</span>
-                <span class="text-sm">{{ transaction.assetInfo.assetClass }}</span>
-              </div>
-              <div class="flex flex-col gap-0.5">
-                <span class="text-xs text-muted">Shares</span>
-                <span class="text-sm font-mono">{{ transaction.assetInfo.shares }}</span>
-              </div>
-              <div class="flex flex-col gap-0.5">
-                <span class="text-xs text-muted">Price</span>
-                <span class="text-sm font-mono">{{ transaction.assetInfo.price }} {{ transaction.currency }}</span>
-              </div>
-            </div>
-          </div>
-        </template>
-
-        <template v-if="transaction.counterpartyInfo">
-          <USeparator />
-          <div>
-            <p class="text-xs text-muted uppercase tracking-wide mb-2">Counterparty</p>
-            <div class="grid grid-cols-2 gap-x-8 gap-y-2">
-              <div class="flex flex-col gap-0.5">
-                <span class="text-xs text-muted">Name</span>
-                <span class="text-sm">{{ transaction.counterpartyInfo.name }}</span>
-              </div>
-              <div class="flex flex-col gap-0.5">
-                <span class="text-xs text-muted">IBAN</span>
-                <span class="text-sm font-mono">{{ transaction.counterpartyInfo.iban }}</span>
-              </div>
-              <div
-                v-if="transaction.counterpartyInfo.paymentReference"
-                class="flex flex-col gap-0.5 col-span-2"
-              >
-                <span class="text-xs text-muted">Reference</span>
-                <span class="text-sm">{{ transaction.counterpartyInfo.paymentReference }}</span>
-              </div>
-            </div>
-          </div>
-        </template>
-
-        <template v-if="transaction.fxInfo">
-          <USeparator />
-          <div>
-            <p class="text-xs text-muted uppercase tracking-wide mb-2">Foreign Exchange</p>
-            <div class="grid grid-cols-2 gap-x-8 gap-y-2">
-              <div class="flex flex-col gap-0.5">
-                <span class="text-xs text-muted">Original Amount</span>
-                <span class="text-sm font-mono">{{ transaction.fxInfo.originalAmount }} {{ transaction.fxInfo.originalCurrency }}</span>
-              </div>
-              <div class="flex flex-col gap-0.5">
-                <span class="text-xs text-muted">FX Rate</span>
-                <span class="text-sm font-mono">{{ transaction.fxInfo.fxRate }}</span>
-              </div>
-            </div>
-          </div>
-        </template>
-
         <template v-if="transaction.merchantName || transaction.mccCode">
           <USeparator />
           <div class="grid grid-cols-2 gap-x-8 gap-y-2">
-            <div
-              v-if="transaction.merchantName"
-              class="flex flex-col gap-0.5"
-            >
+            <div v-if="transaction.merchantName" class="flex flex-col gap-0.5">
               <span class="text-xs text-muted uppercase tracking-wide">Merchant</span>
               <span class="text-sm">{{ transaction.merchantName }}</span>
+              <span
+                v-if="transaction.rawMerchantName && transaction.rawMerchantName !== transaction.merchantName"
+                class="text-xs text-muted"
+              >
+                Original: {{ transaction.rawMerchantName }}
+              </span>
             </div>
-            <div
-              v-if="transaction.mccCode"
-              class="flex flex-col gap-0.5"
-            >
+            <div v-if="transaction.mccCode" class="flex flex-col gap-0.5">
               <span class="text-xs text-muted uppercase tracking-wide">MCC Code</span>
               <span class="text-sm">
-                <span class="font-mono">{{ transaction.mccCode.mcc }}</span>
-                — {{ transaction.mccCode.description }}
+                <span class="font-mono">{{ transaction.mccCode.mcc }}</span> — {{ transaction.mccCode.description }}
               </span>
             </div>
           </div>
         </template>
 
-        <template v-if="transaction.source === 'SPARKASSE' && (transaction.ownAccountIban || transaction.paymentMethod || transaction.sepaMandateId || transaction.sepaCreditorId)">
+        <template v-if="transaction.assetInfo">
           <USeparator />
-          <div>
-            <p class="text-xs text-muted uppercase tracking-wide mb-2">Sparkasse Details</p>
-            <div class="grid grid-cols-2 gap-x-8 gap-y-2">
-              <div
-                v-if="transaction.ownAccountName"
-                class="flex flex-col gap-0.5"
-              >
-                <span class="text-xs text-muted">Account</span>
-                <span class="text-sm">{{ transaction.ownAccountName }}</span>
-              </div>
-              <div
-                v-if="transaction.ownAccountIban"
-                class="flex flex-col gap-0.5"
-              >
-                <span class="text-xs text-muted">IBAN</span>
-                <span class="text-sm font-mono">{{ transaction.ownAccountIban }}</span>
-              </div>
-              <div
-                v-if="transaction.paymentMethod"
-                class="flex flex-col gap-0.5"
-              >
-                <span class="text-xs text-muted">Payment Method</span>
-                <span class="text-sm">{{ transaction.paymentMethod }}</span>
-              </div>
-              <div
-                v-if="transaction.sepaMandateId"
-                class="flex flex-col gap-0.5"
-              >
-                <span class="text-xs text-muted">SEPA Mandate ID</span>
-                <span class="text-sm font-mono">{{ transaction.sepaMandateId }}</span>
-              </div>
-              <div
-                v-if="transaction.sepaCreditorId"
-                class="flex flex-col gap-0.5"
-              >
-                <span class="text-xs text-muted">SEPA Creditor ID</span>
-                <span class="text-sm font-mono">{{ transaction.sepaCreditorId }}</span>
-              </div>
-            </div>
-          </div>
+          <TransactionsDetailTransactionAssetInfo :asset-info="transaction.assetInfo" :currency="transaction.currency" />
+        </template>
+
+        <template v-if="transaction.counterpartyInfo">
+          <USeparator />
+          <TransactionsDetailTransactionCounterpartyInfo :counterparty-info="transaction.counterpartyInfo" />
+        </template>
+
+        <template v-if="transaction.fxInfo">
+          <USeparator />
+          <TransactionsDetailTransactionFxInfo :fx-info="transaction.fxInfo" />
+        </template>
+
+        <template v-if="transaction.source === 'SPARKASSE' && (transaction.ownAccountIban || transaction.paymentMethod || transaction.sepaMandateId || transaction.sepaCreditorId || transaction.receiverReference)">
+          <USeparator />
+          <TransactionsDetailTransactionSparkasseDetails
+            :own-account-name="transaction.ownAccountName"
+            :own-account-iban="transaction.ownAccountIban"
+            :payment-method="transaction.paymentMethod"
+            :sepa-mandate-id="transaction.sepaMandateId"
+            :sepa-creditor-id="transaction.sepaCreditorId"
+            :receiver-reference="transaction.receiverReference"
+          />
         </template>
 
         <USeparator />
@@ -349,28 +236,11 @@ function formatAmount(value: number | null | undefined, currency: string): strin
           />
           <template v-else>
             <span class="text-sm text-error">Delete permanently?</span>
-            <UButton
-              label="Yes, delete"
-              color="error"
-              size="sm"
-              :loading="deleting"
-              @click="handleDelete"
-            />
-            <UButton
-              label="Cancel"
-              color="neutral"
-              variant="ghost"
-              size="sm"
-              @click="confirmDelete = false"
-            />
+            <UButton label="Yes, delete" color="error" size="sm" :loading="deleting" @click="handleDelete" />
+            <UButton label="Cancel" color="neutral" variant="ghost" size="sm" @click="confirmDelete = false" />
           </template>
         </div>
-        <UButton
-          label="Close"
-          color="neutral"
-          variant="outline"
-          @click="open = false"
-        />
+        <UButton label="Close" color="neutral" variant="outline" @click="open = false" />
       </div>
     </template>
   </UModal>

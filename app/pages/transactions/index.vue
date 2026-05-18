@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import { fetchAccounts } from '~/services/accountService'
 import { useTransactions } from '~/composables/useTransactions'
-import type { TransactionResponse } from '~/types/transaction'
+import type { Account, TransactionResponse } from '~/types/transaction'
 
 definePageMeta({ layout: 'dashboard' })
 
@@ -18,9 +19,27 @@ const {
   goToPage
 } = useTransactions()
 
+// Account tabs
+const accounts = ref<Account[]>([])
+const activeTab = ref('all')
+
+const tabs = computed(() => [
+  { label: 'All', value: 'all' },
+  ...accounts.value.map(a => ({ label: a.name, value: String(a.id) }))
+])
+
+watch(activeTab, (val) => {
+  if (val === 'all') {
+    filters.value.mode = 'all'
+    filters.value.accountId = undefined
+  } else {
+    filters.value.mode = 'account'
+    filters.value.accountId = Number(val)
+  }
+})
+
 const showDetailModal = ref(false)
 const selectedTransaction = ref<TransactionResponse | null>(null)
-const showCreateModal = ref(false)
 
 function openDetail(transaction: TransactionResponse) {
   selectedTransaction.value = transaction
@@ -37,11 +56,10 @@ function onTransactionDeleted(transactionId: string) {
   transactions.value = transactions.value.filter(t => t.transactionId !== transactionId)
 }
 
-function onTransactionCreated() {
+onMounted(async () => {
+  accounts.value = await fetchAccounts()
   load()
-}
-
-onMounted(() => load())
+})
 </script>
 
 <template>
@@ -51,19 +69,20 @@ onMounted(() => load())
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>
-        <template #right>
-          <UButton
-            label="Add Transaction"
-            icon="i-lucide-plus"
-            size="sm"
-            @click="showCreateModal = true"
-          />
-        </template>
       </UDashboardNavbar>
     </template>
 
     <template #body>
       <div class="flex flex-col gap-4">
+        <UTabs
+          v-model="activeTab"
+          :items="tabs"
+          color="neutral"
+          variant="link"
+          value-key="value"
+          label-key="label"
+        />
+
         <TransactionsTransactionFilters
           v-model="filters"
           @reset="resetFilters"
@@ -96,10 +115,5 @@ onMounted(() => load())
     :transaction="selectedTransaction"
     @updated="onTransactionUpdated"
     @deleted="onTransactionDeleted"
-  />
-
-  <TransactionsTransactionCreateModal
-    v-model:open="showCreateModal"
-    @created="onTransactionCreated"
   />
 </template>

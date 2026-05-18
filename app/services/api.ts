@@ -34,6 +34,22 @@ async function handleResponse<T>(response: Response): Promise<T> {
 
 const API_BASE = '/spring'
 
+function authHeaders(extra: Record<string, string> = {}): Record<string, string> {
+  const token = localStorage.getItem('auth_token')
+  const headers: Record<string, string> = { ...extra }
+  if (token) headers['Authorization'] = `Bearer ${token}`
+  return headers
+}
+
+async function handleResponseWithAuthCheck<T>(response: Response): Promise<T> {
+  if (response.status === 401) {
+    localStorage.removeItem('auth_token')
+    window.location.href = '/login'
+    throw new Error('Unauthorized')
+  }
+  return handleResponse<T>(response)
+}
+
 export async function apiGet<T>(path: string, params?: Record<string, string | number | undefined>): Promise<T> {
   const url = new URL(API_BASE + path, window.location.origin)
   if (params) {
@@ -45,9 +61,9 @@ export async function apiGet<T>(path: string, params?: Record<string, string | n
   }
   const response = await fetch(url.toString(), {
     method: 'GET',
-    headers: { Accept: 'application/json' }
+    headers: { Accept: 'application/json', ...authHeaders() }
   })
-  return handleResponse<T>(response)
+  return handleResponseWithAuthCheck<T>(response)
 }
 
 export async function apiPost<T>(path: string, body: unknown): Promise<T> {
@@ -55,11 +71,12 @@ export async function apiPost<T>(path: string, body: unknown): Promise<T> {
     method: 'POST',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      ...authHeaders()
     },
     body: JSON.stringify(body)
   })
-  return handleResponse<T>(response)
+  return handleResponseWithAuthCheck<T>(response)
 }
 
 export async function apiPut<T>(path: string, body: unknown): Promise<T> {
@@ -67,11 +84,12 @@ export async function apiPut<T>(path: string, body: unknown): Promise<T> {
     method: 'PUT',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      ...authHeaders()
     },
     body: JSON.stringify(body)
   })
-  return handleResponse<T>(response)
+  return handleResponseWithAuthCheck<T>(response)
 }
 
 export async function apiPatch<T>(path: string, body: unknown): Promise<T> {
@@ -79,26 +97,27 @@ export async function apiPatch<T>(path: string, body: unknown): Promise<T> {
     method: 'PATCH',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      ...authHeaders()
     },
     body: JSON.stringify(body)
   })
-  return handleResponse<T>(response)
+  return handleResponseWithAuthCheck<T>(response)
 }
 
 export async function apiDelete<T>(path: string): Promise<T> {
   const response = await fetch(API_BASE + path, {
     method: 'DELETE',
-    headers: { Accept: 'application/json' }
+    headers: { Accept: 'application/json', ...authHeaders() }
   })
-  return handleResponse<T>(response)
+  return handleResponseWithAuthCheck<T>(response)
 }
 
 export async function apiPostMultipart<T>(path: string, formData: FormData): Promise<T> {
   const response = await fetch(API_BASE + path, {
     method: 'POST',
-    headers: { Accept: 'application/json' },
+    headers: { Accept: 'application/json', ...authHeaders() },
     body: formData
   })
-  return handleResponse<T>(response)
+  return handleResponseWithAuthCheck<T>(response)
 }

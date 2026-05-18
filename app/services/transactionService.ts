@@ -82,6 +82,26 @@ export async function importSparkasseJson(file: File): Promise<CsvImportResult> 
   return apiPostMultipart<CsvImportResult>(`${BASE}/import/sparkasse-json`, formData)
 }
 
+export async function fetchTransactionsByAccount(
+  accountId: number,
+  params: PageParams = {}
+): Promise<Page<TransactionResponse>> {
+  return apiGet<Page<TransactionResponse>>(
+    `${BASE}/by-account/${accountId}`,
+    pageParamsToRecord(params)
+  )
+}
+
+export async function fetchTransactionsByUserCategory(
+  userCategoryId: number,
+  params: PageParams = {}
+): Promise<Page<TransactionResponse>> {
+  return apiGet<Page<TransactionResponse>>(
+    `${BASE}/by-user-category/${userCategoryId}`,
+    pageParamsToRecord(params)
+  )
+}
+
 export async function fetchTransactionsByMerchant(
   q: string,
   params: PageParams = {}

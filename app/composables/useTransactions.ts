@@ -1,5 +1,6 @@
 import {
   fetchTransactions,
+  fetchTransactionsByAccount,
   fetchTransactionsByCategory,
   fetchTransactionsByType,
   fetchTransactionsByDateRange,
@@ -8,10 +9,11 @@ import {
 import type { PageParams } from '~/types/api'
 import type { Category, TransactionResponse, TransactionType } from '~/types/transaction'
 
-export type FilterMode = 'all' | 'category' | 'type' | 'date' | 'mcc'
+export type FilterMode = 'all' | 'account' | 'category' | 'type' | 'date' | 'mcc'
 
 export interface TransactionFilters {
   mode: FilterMode
+  accountId: number | undefined
   category: Category | undefined
   type: TransactionType | undefined
   from: string
@@ -31,6 +33,7 @@ export function useTransactions() {
 
   const filters = ref<TransactionFilters>({
     mode: 'all',
+    accountId: undefined,
     category: undefined,
     type: undefined,
     from: '',
@@ -53,7 +56,9 @@ export function useTransactions() {
     try {
       let result
       const f = filters.value
-      if (f.mode === 'category' && f.category) {
+      if (f.mode === 'account' && f.accountId) {
+        result = await fetchTransactionsByAccount(f.accountId, pageParams.value)
+      } else if (f.mode === 'category' && f.category) {
         result = await fetchTransactionsByCategory(f.category, pageParams.value)
       } else if (f.mode === 'type' && f.type) {
         result = await fetchTransactionsByType(f.type, pageParams.value)
@@ -77,6 +82,7 @@ export function useTransactions() {
   function resetFilters() {
     filters.value = {
       mode: 'all',
+      accountId: undefined,
       category: undefined,
       type: undefined,
       from: '',
@@ -96,6 +102,7 @@ export function useTransactions() {
   watch(
     () => [
       filters.value.mode,
+      filters.value.accountId,
       filters.value.category,
       filters.value.type,
       filters.value.from,

@@ -65,11 +65,13 @@ function formatDate(dateStr: string): string {
             v-if="row.original.userCategory"
             class="flex items-center gap-1.5"
           >
-            <span
-              v-if="row.original.userCategory.color"
-              class="size-2.5 rounded-full shrink-0"
-              :style="{ backgroundColor: row.original.userCategory.color }"
-            />
+            <UIcon
+                v-if="row.original.userCategory.icon"
+                
+                :name="`i-lucide-${row.original.userCategory.icon}`"
+                class="size-4 text-muted"
+                :style="{ color: row.original.userCategory.color }"
+              />
             <span class="text-sm truncate max-w-28">{{ row.original.userCategory.name }}</span>
           </div>
           <span

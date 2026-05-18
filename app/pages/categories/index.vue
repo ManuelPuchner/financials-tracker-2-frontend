@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { TableColumn } from '@nuxt/ui'
 import {
   fetchCategories,
   createCategory,
@@ -23,6 +24,13 @@ const form = reactive<UserCategoryRequest>({
   color: '#6366f1',
   icon: ''
 })
+
+const columns: TableColumn<UserCategory>[] = [
+  { id: 'category', header: 'Category' },
+  { id: 'icon', header: 'Icon' },
+  { id: 'actions', header: '' }
+]
+
 
 async function load() {
   loading.value = true
@@ -107,7 +115,7 @@ onMounted(load)
     </template>
 
     <template #body>
-      <div class="flex flex-col gap-4 max-w-2xl">
+      <div class="flex flex-col gap-4">
         <div
           v-if="loading"
           class="flex justify-center py-12"
@@ -122,42 +130,58 @@ onMounted(load)
           No categories yet. Create one to get started.
         </div>
 
-        <div
+        <UTable
           v-else
-          class="flex flex-col gap-2"
+          :data="categories"
+          :columns="columns"
+          :loading="loading"
         >
-          <div
-            v-for="cat in categories"
-            :key="cat.id"
-            class="flex items-center gap-3 px-4 py-3 rounded-lg border border-default bg-background"
-          >
-            <span
-              class="size-4 rounded-full shrink-0"
-              :style="{ backgroundColor: cat.color ?? '#888' }"
-            />
-            <span class="font-medium flex-1">{{ cat.name }}</span>
-            <span
-              v-if="cat.icon"
-              class="text-xs text-muted"
-            >{{ cat.icon }}</span>
-            <div class="flex items-center gap-1">
+          <template #category-cell="{ row }">
+            <div
+              class="flex items-center gap-3 cursor-pointer"
+              @click="navigateTo(`/categories/${row.original.id}`)"
+            >
+              <span
+                class="size-3 rounded-full shrink-0"
+                :style="{ backgroundColor: row.original.color ?? '#888' }"
+              />
+              <span class="font-medium">{{ row.original.name }}</span>
+            </div>
+          </template>
+
+          <template #icon-cell="{ row }">
+            <div
+              class="cursor-pointer"
+              @click="navigateTo(`/categories/${row.original.id}`)"
+            >
+              <UIcon
+                v-if="row.original.icon"
+                :name="`i-lucide-${row.original.icon}`"
+                class="size-4 text-muted"
+              />
+              <span v-else class="text-muted text-sm">—</span>
+            </div>
+          </template>
+
+          <template #actions-cell="{ row }">
+            <div class="flex items-center gap-1 justify-end">
               <UButton
                 icon="i-lucide-pencil"
                 color="neutral"
                 variant="ghost"
                 size="xs"
-                @click="openEdit(cat)"
+                @click="openEdit(row.original)"
               />
               <UButton
                 icon="i-lucide-trash-2"
                 color="error"
                 variant="ghost"
                 size="xs"
-                @click="handleDelete(cat)"
+                @click="handleDelete(row.original)"
               />
             </div>
-          </div>
-        </div>
+          </template>
+        </UTable>
       </div>
     </template>
   </UDashboardPanel>

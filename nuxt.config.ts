@@ -12,13 +12,9 @@ export default defineNuxtConfig({
 
   compatibilityDate: '2025-01-15',
 
-  nitro: {
-    devProxy: {
-      '/spring': {
-        target: 'http://localhost:8080/api',
-        changeOrigin: true
-      }
-    }
+  runtimeConfig: {
+    // Override at runtime via NUXT_API_BASE_URL env var
+    apiBaseUrl: 'http://localhost:8080/api'
   },
 
   eslint: {

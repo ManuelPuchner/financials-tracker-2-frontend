@@ -77,7 +77,7 @@ export interface TransactionPatch {
   category?: Category
 }
 
-export type TransactionSource = 'TRADE_REPUBLIC' | 'SPARKASSE'
+export type TransactionSource = 'TRADE_REPUBLIC' | 'SPARKASSE' | 'BARGELD'
 
 export type Category = 'TRADING' | 'CASH' | 'DELIVERY'
 
@@ -156,6 +156,7 @@ export interface TransactionResponse {
   fxInfo: FxInfo | null
   counterpartyInfo: CounterpartyInfo | null
   merchantName: string | null
+  rawMerchantName: string | null
   mccCode: { mcc: string, description: string } | null
   userCategory: UserCategory | null
   account: Account | null
@@ -164,10 +165,13 @@ export interface TransactionResponse {
   sepaMandateId: string | null
   sepaCreditorId: string | null
   paymentMethod: string | null
+  receiverReference: string | null
 }
 
 export interface TransactionRequest {
   transactionId: string
+  accountId?: number
+  transactionSource?: TransactionSource
   datetime: string
   date: string
   accountType: AccountType
