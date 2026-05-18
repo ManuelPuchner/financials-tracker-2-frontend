@@ -25,18 +25,14 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-          cache-dependency-path: frontend/pnpm-lock.yaml
 
       - name: Install dependencies
-        working-directory: frontend
         run: pnpm install --frozen-lockfile
 
       - name: Lint
-        working-directory: frontend
         run: pnpm run lint
 
       - name: Typecheck
-        working-directory: frontend
         run: pnpm run typecheck
 
   build-and-push:
@@ -72,7 +68,7 @@ jobs:
       - name: Build and push image
         uses: docker/build-push-action@v5
         with:
-          context: frontend
+          context: .
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
