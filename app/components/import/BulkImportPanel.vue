@@ -18,7 +18,7 @@ const searchTerm = ref('')
 const searchLoading = ref(false)
 const merchantResults = ref<MerchantResponse[]>([])
 const counterpartyResults = ref<CounterpartyResponse[]>([])
-const selectedItem = ref<{ label: string, value: string, iban?: string, name?: string } | null>(null)
+const selectedItem = ref<{ label: string, value: string, iban?: string, name?: string } | undefined>(undefined)
 
 const searchItems = computed(() => {
   if (mode.value === 'merchant') {
@@ -44,7 +44,7 @@ watch(searchTerm, (val) => {
 })
 watch(mode, () => {
   searchTerm.value = ''
-  selectedItem.value = null
+  selectedItem.value = undefined
   merchantResults.value = []
   counterpartyResults.value = []
 })
@@ -90,16 +90,11 @@ function confirmNew() {
 
 // Accounts
 const accounts = ref<Account[]>([])
-type AccountOption = { label: string, value: number }
-const selectedAccount = ref<AccountOption | null>(null)
-const accountOptions = computed<AccountOption[]>(() =>
+const selectedAccount = ref<number | undefined>(undefined)
+const accountOptions = computed(() =>
   accounts.value.map(a => ({ label: a.name, value: a.id }))
 )
-const resolvedAccountId = computed(() =>
-  selectedAccount.value != null
-    ? (typeof selectedAccount.value === 'object' ? selectedAccount.value.value : selectedAccount.value as number)
-    : undefined
-)
+const resolvedAccountId = computed(() => selectedAccount.value)
 
 // User categories
 const userCategories = ref<UserCategory[]>([])
@@ -109,7 +104,7 @@ const categoryOptions = computed(() =>
 )
 onMounted(async () => {
   [accounts.value, userCategories.value] = await Promise.all([fetchAccounts(), fetchCategories()])
-  selectedAccount.value = accountOptions.value[0] ?? null
+  selectedAccount.value = accountOptions.value[0]?.value
 })
 
 // Editable rows
@@ -174,10 +169,10 @@ function parseCsvIntoRows(text: string) {
     parseError.value = 'CSV must have a header row and at least one data row.'
     return
   }
-  const sep = lines[0].includes(';') ? ';' : ','
+  const sep = lines[0]!.includes(';') ? ';' : ','
   const added: EditableRow[] = []
   for (let i = 1; i < lines.length; i++) {
-    const line = lines[i].trim()
+    const line = lines[i]!.trim()
     if (!line) continue
     const cols = line.split(sep).map(c => c.trim().replace(/^"|"$/g, ''))
     const [dateRaw = '', amountRaw = '', noteRaw = ''] = cols
@@ -378,7 +373,7 @@ function resetAll() {
             size="xs"
             color="neutral"
             variant="ghost"
-            @click="selectedItem = null; searchTerm = ''"
+            @click="selectedItem = undefined; searchTerm = ''"
           />
         </div>
       </div>

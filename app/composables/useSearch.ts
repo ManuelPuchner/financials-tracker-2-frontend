@@ -1,3 +1,4 @@
+import type { CommandPaletteGroup, CommandPaletteItem } from '@nuxt/ui'
 import { fetchCounterparties } from '~/services/counterpartyService'
 import { fetchMerchants } from '~/services/merchantService'
 import { fetchAssets } from '~/services/assetService'
@@ -6,7 +7,7 @@ export function useSearch() {
   const searchTerm = ref('')
   const loading = ref(false)
 
-  const groups = ref<Record<string, unknown>[]>([])
+  const groups = ref<CommandPaletteGroup<CommandPaletteItem>[]>([])
 
   let debounceTimer: ReturnType<typeof setTimeout> | null = null
 

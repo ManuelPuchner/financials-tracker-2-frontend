@@ -47,7 +47,7 @@ watch(searchTerm, (val) => {
 
 watch(mode, () => {
   searchTerm.value = ''
-  selectedItem.value = null
+  selectedItem.value = undefined
   merchantResults.value = []
   counterpartyResults.value = []
 })
@@ -68,7 +68,7 @@ async function doSearch(q: string) {
 }
 
 // Selected item
-const selectedItem = ref<{ label: string, value: string, iban?: string, name?: string } | null>(null)
+const selectedItem = ref<{ label: string, value: string, iban?: string, name?: string } | undefined>(undefined)
 
 // New item modal
 const showNewModal = ref(false)
@@ -101,21 +101,17 @@ function confirmNew() {
 // Accounts
 const accounts = ref<Account[]>([])
 type AccountOption = { label: string, value: number }
-const selectedAccount = ref<AccountOption | null>(null)
+const selectedAccount = ref<number | undefined>(undefined)
 const accountOptions = computed<AccountOption[]>(() =>
   accounts.value.map(a => ({ label: a.name, value: a.id }))
 )
-const resolvedAccountId = computed(() =>
-  selectedAccount.value != null
-    ? (typeof selectedAccount.value === 'object' ? selectedAccount.value.value : selectedAccount.value as number)
-    : undefined
-)
+const resolvedAccountId = computed(() => selectedAccount.value)
 
 // User categories
 const userCategories = ref<UserCategory[]>([])
 onMounted(async () => {
   [accounts.value, userCategories.value] = await Promise.all([fetchAccounts(), fetchCategories()])
-  selectedAccount.value = accountOptions.value[0] ?? null
+  selectedAccount.value = accountOptions.value[0]?.value
 })
 const categoryOptions = computed(() =>
   userCategories.value.map(c => ({
@@ -197,12 +193,12 @@ async function handleSubmit() {
 
 function resetForm() {
   direction.value = 'outgoing'
-  selectedAccount.value = accountOptions.value[0] ?? null
+  selectedAccount.value = accountOptions.value[0]?.value
   form.date = new Date().toISOString().slice(0, 10)
   form.amount = undefined
   form.description = ''
   form.userCategoryId = undefined
-  selectedItem.value = null
+  selectedItem.value = undefined
   searchTerm.value = ''
   merchantResults.value = []
   counterpartyResults.value = []
@@ -304,7 +300,7 @@ function resetForm() {
                   size="xs"
                   color="neutral"
                   variant="ghost"
-                  @click="selectedItem = null; searchTerm = ''"
+                  @click="selectedItem = undefined; searchTerm = ''"
                 />
               </div>
 
