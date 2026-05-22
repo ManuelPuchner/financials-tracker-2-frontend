@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img">
+  <title>Ascent app icon</title>
+  <desc>Teal app icon with ascending white bars and a gold trend arrow</desc>
+  <rect width="512" height="512" fill="#0D9488"/>
+  <rect x="83" y="333" width="67" height="141" rx="13" fill="#ffffff" opacity="0.55"/>
+  <rect x="186" y="240" width="67" height="234" rx="13" fill="#ffffff" opacity="0.78"/>
+  <rect x="288" y="144" width="67" height="330" rx="13" fill="#ffffff"/>
+  <path d="M117 333 L219 240 L432 64" stroke="#FDE047" stroke-width="14" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M432 64 L373 72 M432 64 L424 123" stroke="#FDE047" stroke-width="14" fill="none" stroke-linecap="round"/>
+</svg>
