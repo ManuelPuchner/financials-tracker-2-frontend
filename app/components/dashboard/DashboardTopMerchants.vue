@@ -11,7 +11,7 @@ const { formatCurrency } = useFormatters()
 const columns = [
   { id: 'rank', header: '#' },
   { id: 'merchantName', header: 'Merchant' },
-  { id: 'transactionCount', header: 'Transactions' },
+  { id: 'transactionCount', header: 'Transactions', meta: { class: { th: 'hidden sm:table-cell', td: 'hidden sm:table-cell' } } },
   { id: 'totalSpent', header: 'Total Spent' }
 ]
 

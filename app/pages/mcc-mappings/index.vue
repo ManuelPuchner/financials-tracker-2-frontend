@@ -119,12 +119,12 @@ onMounted(load)
           <div
             v-for="mcc in filteredCodes"
             :key="mcc.mcc"
-            class="flex items-center gap-3 px-4 py-3 rounded-lg border border-default bg-background"
+            class="flex flex-wrap items-center gap-3 px-4 py-3 rounded-lg border border-default bg-background"
           >
             <div class="flex items-center justify-center size-12 rounded font-mono text-xs text-muted border border-default shrink-0">
               {{ mcc.mcc }}
             </div>
-            <div class="flex-1 min-w-0">
+            <div class="flex-1 min-w-30">
               <div class="text-sm truncate">
                 {{ mcc.description }}
               </div>
@@ -140,18 +140,18 @@ onMounted(load)
                 <span class="text-xs text-muted">{{ mcc.userCategory.name }}</span>
               </div>
             </div>
-            <div class="flex items-center gap-2 shrink-0">
+            <div class="flex items-center gap-2 w-full sm:w-auto">
               <UIcon
                 v-if="saving === mcc.mcc"
                 name="i-lucide-loader-circle"
-                class="size-4 animate-spin text-muted"
+                class="size-4 animate-spin text-muted shrink-0"
               />
               <USelectMenu
                 :model-value="mcc.userCategory?.id ?? null"
                 :items="categoryOptions"
                 value-key="value"
                 label-key="label"
-                class="w-44"
+                class="w-full sm:w-44"
                 :disabled="saving === mcc.mcc"
                 @update:model-value="(val: number | null) => handleCategoryChange(mcc, val)"
               />

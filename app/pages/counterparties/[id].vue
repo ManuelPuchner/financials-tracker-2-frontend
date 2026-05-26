@@ -175,7 +175,7 @@ onMounted(async () => {
               <!-- Merchant mapping card -->
               <UCard>
                 <div class="flex flex-col gap-3">
-                  <div class="flex items-center justify-between">
+                  <div class="flex flex-wrap items-start justify-between gap-2">
                     <div>
                       <p class="text-sm font-medium">
                         Merchant Mapping

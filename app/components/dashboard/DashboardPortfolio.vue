@@ -10,17 +10,17 @@ const { formatCurrency, formatNumber } = useFormatters()
 
 const columns = [
   { id: 'symbol', header: 'Symbol' },
-  { id: 'name', header: 'Name' },
-  { id: 'totalShares', header: 'Shares' },
+  { id: 'name', header: 'Name', meta: { class: { th: 'hidden sm:table-cell', td: 'hidden sm:table-cell' } } },
+  { id: 'totalShares', header: 'Shares', meta: { class: { th: 'hidden md:table-cell', td: 'hidden md:table-cell' } } },
   { id: 'totalInvested', header: 'Invested' },
-  { id: 'totalDividendsReceived', header: 'Dividends' }
+  { id: 'totalDividendsReceived', header: 'Dividends', meta: { class: { th: 'hidden sm:table-cell', td: 'hidden sm:table-cell' } } }
 ]
 </script>
 
 <template>
   <UCard>
     <template #header>
-      <div class="flex items-center justify-between">
+      <div class="flex flex-wrap items-center justify-between gap-2">
         <div class="flex items-center gap-2">
           <UIcon
             name="i-lucide-bar-chart-2"
@@ -30,10 +30,10 @@ const columns = [
         </div>
         <div
           v-if="!loading"
-          class="flex items-center gap-4 text-xs text-muted"
+          class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted"
         >
-          <span>Total invested: <strong class="text-default">{{ formatCurrency(portfolio?.totalInvested) }}</strong></span>
-          <span>Dividends received: <strong class="text-success">{{ formatCurrency(portfolio?.totalDividendsReceived) }}</strong></span>
+          <span>Invested: <strong class="text-default">{{ formatCurrency(portfolio?.totalInvested) }}</strong></span>
+          <span>Dividends: <strong class="text-success">{{ formatCurrency(portfolio?.totalDividendsReceived) }}</strong></span>
         </div>
       </div>
     </template>

@@ -305,11 +305,11 @@ function resetForm() {
               </div>
 
               <!-- Date + Amount + Currency row -->
-              <div class="grid grid-cols-5 gap-3">
+              <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
                 <UFormField
                   label="Date"
                   required
-                  class="col-span-2"
+                  class="col-span-2 sm:col-span-2"
                 >
                   <UInput
                     v-model="form.date"
@@ -320,7 +320,7 @@ function resetForm() {
                 <UFormField
                   label="Amount"
                   required
-                  class="col-span-2"
+                  class="col-span-2 sm:col-span-2"
                 >
                   <div class="flex rounded-lg border border-default overflow-hidden">
                     <button
@@ -354,7 +354,10 @@ function resetForm() {
                     >
                   </div>
                 </UFormField>
-                <UFormField label="Currency">
+                <UFormField
+                  label="Currency"
+                  class="col-span-2 sm:col-span-1"
+                >
                   <UInput
                     v-model="form.currency"
                     placeholder="EUR"
@@ -365,7 +368,7 @@ function resetForm() {
               </div>
 
               <!-- Account + Category + Description row -->
-              <div class="grid grid-cols-3 gap-3">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <UFormField
                   label="Account"
                   required

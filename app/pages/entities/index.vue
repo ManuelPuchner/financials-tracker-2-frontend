@@ -61,11 +61,11 @@ async function loadCounterparties() {
 
 const counterpartyColumns: TableColumn<CounterpartyResponse>[] = [
   { id: 'name', header: 'Name' },
-  { id: 'iban', header: 'IBAN' },
-  { id: 'income', header: 'Income' },
-  { id: 'outgoing', header: 'Outgoing' },
+  { id: 'iban', header: 'IBAN', meta: { class: { th: 'hidden lg:table-cell', td: 'hidden lg:table-cell' } } },
+  { id: 'income', header: 'Income', meta: { class: { th: 'hidden sm:table-cell', td: 'hidden sm:table-cell' } } },
+  { id: 'outgoing', header: 'Outgoing', meta: { class: { th: 'hidden md:table-cell', td: 'hidden md:table-cell' } } },
   { id: 'net', header: 'Net' },
-  { id: 'count', header: 'Transactions' },
+  { id: 'count', header: 'Transactions', meta: { class: { th: 'hidden lg:table-cell', td: 'hidden lg:table-cell' } } },
   { id: 'actions', header: '' }
 ]
 
@@ -91,10 +91,10 @@ async function loadMerchants() {
 
 const merchantColumns: TableColumn<MerchantResponse>[] = [
   { id: 'name', header: 'Name' },
-  { id: 'income', header: 'Income' },
-  { id: 'outgoing', header: 'Outgoing' },
+  { id: 'income', header: 'Income', meta: { class: { th: 'hidden sm:table-cell', td: 'hidden sm:table-cell' } } },
+  { id: 'outgoing', header: 'Outgoing', meta: { class: { th: 'hidden md:table-cell', td: 'hidden md:table-cell' } } },
   { id: 'net', header: 'Net' },
-  { id: 'count', header: 'Transactions' },
+  { id: 'count', header: 'Transactions', meta: { class: { th: 'hidden lg:table-cell', td: 'hidden lg:table-cell' } } },
   { id: 'actions', header: '' }
 ]
 
@@ -120,12 +120,12 @@ async function loadAssets() {
 
 const assetColumns: TableColumn<AssetResponse>[] = [
   { id: 'symbol', header: 'Symbol' },
-  { id: 'name', header: 'Name' },
-  { id: 'assetClass', header: 'Class' },
-  { id: 'income', header: 'Income' },
-  { id: 'outgoing', header: 'Outgoing' },
+  { id: 'name', header: 'Name', meta: { class: { th: 'hidden sm:table-cell', td: 'hidden sm:table-cell' } } },
+  { id: 'assetClass', header: 'Class', meta: { class: { th: 'hidden sm:table-cell', td: 'hidden sm:table-cell' } } },
+  { id: 'income', header: 'Income', meta: { class: { th: 'hidden md:table-cell', td: 'hidden md:table-cell' } } },
+  { id: 'outgoing', header: 'Outgoing', meta: { class: { th: 'hidden md:table-cell', td: 'hidden md:table-cell' } } },
   { id: 'net', header: 'Net' },
-  { id: 'count', header: 'Transactions' },
+  { id: 'count', header: 'Transactions', meta: { class: { th: 'hidden lg:table-cell', td: 'hidden lg:table-cell' } } },
   { id: 'actions', header: '' }
 ]
 

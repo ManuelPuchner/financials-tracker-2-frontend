@@ -30,14 +30,16 @@ export default defineNuxtConfig({
     devOptions: {
       enabled: false
     },
-    registerType: 'autoUpdate', // Service Worker aktualisiert sich selbst
+    registerType: 'autoUpdate',
     manifest: {
-      name: 'Meine App',
-      short_name: 'MeineApp',
-      description: 'Beschreibung meiner App',
-      theme_color: '#ffffff',
-      background_color: '#ffffff',
-      lang: 'de',
+      name: 'Financials Tracker',
+      short_name: 'Financials',
+      description: 'Personal finance dashboard for tracking transactions and investments',
+      theme_color: '#18181b',
+      background_color: '#18181b',
+      display: 'standalone',
+      start_url: '/',
+      lang: 'en',
       icons: [
         {
           src: 'pwa-64x64.png',
@@ -61,7 +63,6 @@ export default defineNuxtConfig({
           purpose: 'maskable'
         }
       ]
-
     },
     workbox: {
       navigateFallback: '/',

@@ -60,8 +60,8 @@ function setMode(mode: FilterMode) {
 
 <template>
   <div class="flex flex-col gap-4 p-4 bg-muted/30 rounded-lg border border-default">
-    <div class="flex flex-wrap gap-3 items-end">
-      <div class="flex flex-col gap-1 min-w-40">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+      <div class="flex flex-col gap-1">
         <label class="text-xs font-medium text-muted">Filter mode</label>
         <USelect
           :model-value="filters.mode"
@@ -74,7 +74,7 @@ function setMode(mode: FilterMode) {
 
       <div
         v-if="filters.mode === 'category'"
-        class="flex flex-col gap-1 min-w-40"
+        class="flex flex-col gap-1"
       >
         <label class="text-xs font-medium text-muted">Category</label>
         <USelect
@@ -88,7 +88,7 @@ function setMode(mode: FilterMode) {
 
       <div
         v-if="filters.mode === 'type'"
-        class="flex flex-col gap-1 min-w-56"
+        class="flex flex-col gap-1"
       >
         <label class="text-xs font-medium text-muted">Type</label>
         <USelect
@@ -102,7 +102,7 @@ function setMode(mode: FilterMode) {
 
       <div
         v-if="filters.mode === 'mcc'"
-        class="flex flex-col gap-1 min-w-72"
+        class="flex flex-col gap-1 sm:col-span-2 lg:col-span-2"
       >
         <label class="text-xs font-medium text-muted">MCC Code</label>
         <USelect
@@ -133,7 +133,7 @@ function setMode(mode: FilterMode) {
         </div>
       </template>
 
-      <div class="flex flex-col gap-1 min-w-48">
+      <div class="flex flex-col gap-1">
         <label class="text-xs font-medium text-muted">Sort</label>
         <USelect
           v-model="filters.sort"
@@ -143,13 +143,16 @@ function setMode(mode: FilterMode) {
         />
       </div>
 
-      <UButton
-        label="Reset"
-        icon="i-lucide-x"
-        color="neutral"
-        variant="outline"
-        @click="emit('reset')"
-      />
+      <div class="flex items-end">
+        <UButton
+          label="Reset"
+          icon="i-lucide-x"
+          color="neutral"
+          variant="outline"
+          class="w-full sm:w-auto"
+          @click="emit('reset')"
+        />
+      </div>
     </div>
   </div>
 </template>

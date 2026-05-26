@@ -18,12 +18,12 @@ const emit = defineEmits<{
 
 const columns: TableColumn<TransactionResponse>[] = [
   { id: 'date', header: 'Date' },
-  { id: 'type', header: 'Type' },
-  { id: 'category', header: 'Category' },
-  { id: 'userCategory', header: 'User Category' },
+  { id: 'type', header: 'Type', meta: { class: { th: 'hidden md:table-cell', td: 'hidden md:table-cell' } } },
+  { id: 'category', header: 'Category', meta: { class: { th: 'hidden lg:table-cell', td: 'hidden lg:table-cell' } } },
+  { id: 'userCategory', header: 'User Category', meta: { class: { th: 'hidden lg:table-cell', td: 'hidden lg:table-cell' } } },
   { id: 'asset', header: 'Asset' },
   { id: 'amount', header: 'Amount' },
-  { id: 'fee', header: 'Fee' },
+  { id: 'fee', header: 'Fee', meta: { class: { th: 'hidden sm:table-cell', td: 'hidden sm:table-cell' } } },
   { id: 'actions', header: '' }
 ]
 
