@@ -16,3 +16,20 @@
   --color-green-900: #0A5331;
   --color-green-950: #052E16;
 }
+
+/* PWA / iOS safe area insets */
+:root {
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --ui-header-height: calc(4rem + var(--safe-top));
+}
+
+/* Sidebar footer: push above home indicator */
+[data-slot="footer"] {
+  padding-bottom: calc(0.5rem + var(--safe-bottom));
+}
+
+/* Panel scroll body: ensure last item is reachable above home indicator */
+[data-slot="root"]:not([data-collapsed]) > [data-slot="body"] {
+  padding-bottom: calc(1.5rem + var(--safe-bottom));
+}

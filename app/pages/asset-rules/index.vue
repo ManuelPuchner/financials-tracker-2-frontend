@@ -116,7 +116,7 @@ onMounted(load)
 </script>
 
 <template>
-  <div>
+  <div class="contents">
     <UDashboardPanel>
       <template #header>
         <UDashboardNavbar title="Asset Rules">

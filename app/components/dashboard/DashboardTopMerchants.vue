@@ -42,28 +42,32 @@ const rows = computed(() =>
         class="h-8 bg-muted animate-pulse rounded"
       />
     </div>
-    <UTable
+    <div
       v-else
-      :data="rows"
-      :columns="columns"
+      class="overflow-x-auto"
     >
-      <template #rank-cell="{ row }">
-        <span class="text-muted text-xs font-mono">{{ row.original.rank }}</span>
-      </template>
-      <template #merchantName-cell="{ row }">
-        <span class="font-medium">{{ row.original.merchantName }}</span>
-      </template>
-      <template #transactionCount-cell="{ row }">
-        <UBadge
-          :label="String(row.original.transactionCount)"
-          color="neutral"
-          variant="subtle"
-          size="sm"
-        />
-      </template>
-      <template #totalSpent-cell="{ row }">
-        <span class="tabular-nums text-error font-medium">{{ formatCurrency(row.original.totalSpent) }}</span>
-      </template>
-    </UTable>
+      <UTable
+        :data="rows"
+        :columns="columns"
+      >
+        <template #rank-cell="{ row }">
+          <span class="text-muted text-xs font-mono">{{ row.original.rank }}</span>
+        </template>
+        <template #merchantName-cell="{ row }">
+          <span class="font-medium">{{ row.original.merchantName }}</span>
+        </template>
+        <template #transactionCount-cell="{ row }">
+          <UBadge
+            :label="String(row.original.transactionCount)"
+            color="neutral"
+            variant="subtle"
+            size="sm"
+          />
+        </template>
+        <template #totalSpent-cell="{ row }">
+          <span class="tabular-nums text-error font-medium">{{ formatCurrency(row.original.totalSpent) }}</span>
+        </template>
+      </UTable>
+    </div>
   </UCard>
 </template>

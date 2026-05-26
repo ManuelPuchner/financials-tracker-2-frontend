@@ -91,7 +91,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
+  <div class="contents">
     <UDashboardPanel>
       <template #header>
         <UDashboardNavbar :title="category?.name ?? 'Category'">

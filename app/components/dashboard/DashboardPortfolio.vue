@@ -48,31 +48,35 @@ const columns = [
         class="h-8 bg-muted animate-pulse rounded"
       />
     </div>
-    <UTable
+    <div
       v-else
-      :data="portfolio?.positions ?? []"
-      :columns="columns"
+      class="overflow-x-auto"
     >
-      <template #symbol-cell="{ row }">
-        <UBadge
-          :label="row.original.symbol"
-          color="primary"
-          variant="subtle"
-          size="sm"
-        />
-      </template>
-      <template #name-cell="{ row }">
-        <span class="font-medium">{{ row.original.name }}</span>
-      </template>
-      <template #totalShares-cell="{ row }">
-        <span class="tabular-nums text-sm">{{ formatNumber(row.original.totalShares) }}</span>
-      </template>
-      <template #totalInvested-cell="{ row }">
-        <span class="tabular-nums font-medium">{{ formatCurrency(row.original.totalInvested) }}</span>
-      </template>
-      <template #totalDividendsReceived-cell="{ row }">
-        <span class="tabular-nums text-success">{{ formatCurrency(row.original.totalDividendsReceived) }}</span>
-      </template>
-    </UTable>
+      <UTable
+        :data="portfolio?.positions ?? []"
+        :columns="columns"
+      >
+        <template #symbol-cell="{ row }">
+          <UBadge
+            :label="row.original.symbol"
+            color="primary"
+            variant="subtle"
+            size="sm"
+          />
+        </template>
+        <template #name-cell="{ row }">
+          <span class="font-medium">{{ row.original.name }}</span>
+        </template>
+        <template #totalShares-cell="{ row }">
+          <span class="tabular-nums text-sm">{{ formatNumber(row.original.totalShares) }}</span>
+        </template>
+        <template #totalInvested-cell="{ row }">
+          <span class="tabular-nums font-medium">{{ formatCurrency(row.original.totalInvested) }}</span>
+        </template>
+        <template #totalDividendsReceived-cell="{ row }">
+          <span class="tabular-nums text-success">{{ formatCurrency(row.original.totalDividendsReceived) }}</span>
+        </template>
+      </UTable>
+    </div>
   </UCard>
 </template>

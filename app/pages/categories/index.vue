@@ -96,7 +96,7 @@ onMounted(load)
 </script>
 
 <template>
-  <div>
+  <div class="contents">
     <UDashboardPanel>
       <template #header>
         <UDashboardNavbar title="Categories">
@@ -133,61 +133,65 @@ onMounted(load)
             No categories yet. Create one to get started.
           </div>
 
-          <UTable
+          <div
             v-else
-            :data="categories"
-            :columns="columns"
-            :loading="loading"
+            class="overflow-x-auto"
           >
-            <template #category-cell="{ row }">
-              <div
-                class="flex items-center gap-3 cursor-pointer"
-                @click="navigateTo(`/categories/${row.original.id}`)"
-              >
-                <span
-                  class="size-3 rounded-full shrink-0"
-                  :style="{ backgroundColor: row.original.color ?? '#888' }"
-                />
-                <span class="font-medium">{{ row.original.name }}</span>
-              </div>
-            </template>
+            <UTable
+              :data="categories"
+              :columns="columns"
+              :loading="loading"
+            >
+              <template #category-cell="{ row }">
+                <div
+                  class="flex items-center gap-3 cursor-pointer"
+                  @click="navigateTo(`/categories/${row.original.id}`)"
+                >
+                  <span
+                    class="size-3 rounded-full shrink-0"
+                    :style="{ backgroundColor: row.original.color ?? '#888' }"
+                  />
+                  <span class="font-medium">{{ row.original.name }}</span>
+                </div>
+              </template>
 
-            <template #icon-cell="{ row }">
-              <div
-                class="cursor-pointer"
-                @click="navigateTo(`/categories/${row.original.id}`)"
-              >
-                <UIcon
-                  v-if="row.original.icon"
-                  :name="`i-lucide-${row.original.icon}`"
-                  class="size-4 text-muted"
-                />
-                <span
-                  v-else
-                  class="text-muted text-sm"
-                >—</span>
-              </div>
-            </template>
+              <template #icon-cell="{ row }">
+                <div
+                  class="cursor-pointer"
+                  @click="navigateTo(`/categories/${row.original.id}`)"
+                >
+                  <UIcon
+                    v-if="row.original.icon"
+                    :name="`i-lucide-${row.original.icon}`"
+                    class="size-4 text-muted"
+                  />
+                  <span
+                    v-else
+                    class="text-muted text-sm"
+                  >—</span>
+                </div>
+              </template>
 
-            <template #actions-cell="{ row }">
-              <div class="flex items-center gap-1 justify-end">
-                <UButton
-                  icon="i-lucide-pencil"
-                  color="neutral"
-                  variant="ghost"
-                  size="xs"
-                  @click="openEdit(row.original)"
-                />
-                <UButton
-                  icon="i-lucide-trash-2"
-                  color="error"
-                  variant="ghost"
-                  size="xs"
-                  @click="handleDelete(row.original)"
-                />
-              </div>
-            </template>
-          </UTable>
+              <template #actions-cell="{ row }">
+                <div class="flex items-center gap-1 justify-end">
+                  <UButton
+                    icon="i-lucide-pencil"
+                    color="neutral"
+                    variant="ghost"
+                    size="xs"
+                    @click="openEdit(row.original)"
+                  />
+                  <UButton
+                    icon="i-lucide-trash-2"
+                    color="error"
+                    variant="ghost"
+                    size="xs"
+                    @click="handleDelete(row.original)"
+                  />
+                </div>
+              </template>
+            </UTable>
+          </div>
         </div>
       </template>
     </UDashboardPanel>

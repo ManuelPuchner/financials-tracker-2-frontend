@@ -173,40 +173,42 @@ onMounted(() => {
             </div>
           </div>
 
-          <UTable
-            :columns="counterpartyColumns"
-            :data="counterparties"
-            :loading="cpLoading"
-          >
-            <template #name-cell="{ row }">
-              <span class="font-medium">{{ row.original.name ?? '—' }}</span>
-            </template>
-            <template #iban-cell="{ row }">
-              <span class="font-mono text-xs text-muted">{{ row.original.iban }}</span>
-            </template>
-            <template #income-cell="{ row }">
-              <span class="text-success">{{ formatCurrency(row.original.stats.totalIncome) }}</span>
-            </template>
-            <template #outgoing-cell="{ row }">
-              <span class="text-error">{{ formatCurrency(row.original.stats.totalOutgoing) }}</span>
-            </template>
-            <template #net-cell="{ row }">
-              <span :class="row.original.stats.net >= 0 ? 'text-success' : 'text-error'">
-                {{ formatCurrency(row.original.stats.net) }}
-              </span>
-            </template>
-            <template #count-cell="{ row }">
-              {{ formatNumber(row.original.stats.transactionCount) }}
-            </template>
-            <template #actions-cell="{ row }">
-              <UButton
-                icon="i-lucide-arrow-right"
-                variant="ghost"
-                size="xs"
-                @click.stop="navigateTo(`/counterparties/${row.original.id}`)"
-              />
-            </template>
-          </UTable>
+          <div class="overflow-x-auto">
+            <UTable
+              :columns="counterpartyColumns"
+              :data="counterparties"
+              :loading="cpLoading"
+            >
+              <template #name-cell="{ row }">
+                <span class="font-medium">{{ row.original.name ?? '—' }}</span>
+              </template>
+              <template #iban-cell="{ row }">
+                <span class="font-mono text-xs text-muted">{{ row.original.iban }}</span>
+              </template>
+              <template #income-cell="{ row }">
+                <span class="text-success">{{ formatCurrency(row.original.stats.totalIncome) }}</span>
+              </template>
+              <template #outgoing-cell="{ row }">
+                <span class="text-error">{{ formatCurrency(row.original.stats.totalOutgoing) }}</span>
+              </template>
+              <template #net-cell="{ row }">
+                <span :class="row.original.stats.net >= 0 ? 'text-success' : 'text-error'">
+                  {{ formatCurrency(row.original.stats.net) }}
+                </span>
+              </template>
+              <template #count-cell="{ row }">
+                {{ formatNumber(row.original.stats.transactionCount) }}
+              </template>
+              <template #actions-cell="{ row }">
+                <UButton
+                  icon="i-lucide-arrow-right"
+                  variant="ghost"
+                  size="xs"
+                  @click.stop="navigateTo(`/counterparties/${row.original.id}`)"
+                />
+              </template>
+            </UTable>
+          </div>
           <UPagination
             v-if="cpTotalPages > 1"
             :page="cpPage + 1"
@@ -218,37 +220,39 @@ onMounted(() => {
 
         <!-- Merchants -->
         <template v-if="activeTab === 'merchants'">
-          <UTable
-            :columns="merchantColumns"
-            :data="merchants"
-            :loading="mLoading"
-          >
-            <template #name-cell="{ row }">
-              <span class="font-medium">{{ row.original.name }}</span>
-            </template>
-            <template #income-cell="{ row }">
-              <span class="text-success">{{ formatCurrency(row.original.stats.totalIncome) }}</span>
-            </template>
-            <template #outgoing-cell="{ row }">
-              <span class="text-error">{{ formatCurrency(row.original.stats.totalOutgoing) }}</span>
-            </template>
-            <template #net-cell="{ row }">
-              <span :class="row.original.stats.net >= 0 ? 'text-success' : 'text-error'">
-                {{ formatCurrency(row.original.stats.net) }}
-              </span>
-            </template>
-            <template #count-cell="{ row }">
-              {{ formatNumber(row.original.stats.transactionCount) }}
-            </template>
-            <template #actions-cell="{ row }">
-              <UButton
-                icon="i-lucide-arrow-right"
-                variant="ghost"
-                size="xs"
-                @click.stop="navigateTo(`/merchants/${encodeURIComponent(row.original.name)}`)"
-              />
-            </template>
-          </UTable>
+          <div class="overflow-x-auto">
+            <UTable
+              :columns="merchantColumns"
+              :data="merchants"
+              :loading="mLoading"
+            >
+              <template #name-cell="{ row }">
+                <span class="font-medium">{{ row.original.name }}</span>
+              </template>
+              <template #income-cell="{ row }">
+                <span class="text-success">{{ formatCurrency(row.original.stats.totalIncome) }}</span>
+              </template>
+              <template #outgoing-cell="{ row }">
+                <span class="text-error">{{ formatCurrency(row.original.stats.totalOutgoing) }}</span>
+              </template>
+              <template #net-cell="{ row }">
+                <span :class="row.original.stats.net >= 0 ? 'text-success' : 'text-error'">
+                  {{ formatCurrency(row.original.stats.net) }}
+                </span>
+              </template>
+              <template #count-cell="{ row }">
+                {{ formatNumber(row.original.stats.transactionCount) }}
+              </template>
+              <template #actions-cell="{ row }">
+                <UButton
+                  icon="i-lucide-arrow-right"
+                  variant="ghost"
+                  size="xs"
+                  @click.stop="navigateTo(`/merchants/${encodeURIComponent(row.original.name)}`)"
+                />
+              </template>
+            </UTable>
+          </div>
           <UPagination
             v-if="mTotalPages > 1"
             :page="mPage + 1"
@@ -260,47 +264,49 @@ onMounted(() => {
 
         <!-- Assets -->
         <template v-if="activeTab === 'assets'">
-          <UTable
-            :columns="assetColumns"
-            :data="assets"
-            :loading="aLoading"
-          >
-            <template #symbol-cell="{ row }">
-              <span class="font-mono font-medium">{{ row.original.symbol }}</span>
-            </template>
-            <template #name-cell="{ row }">
-              {{ row.original.name }}
-            </template>
-            <template #assetClass-cell="{ row }">
-              <UBadge
-                :label="row.original.assetClass"
-                variant="subtle"
-                size="sm"
-              />
-            </template>
-            <template #income-cell="{ row }">
-              <span class="text-success">{{ formatCurrency(row.original.stats.totalIncome) }}</span>
-            </template>
-            <template #outgoing-cell="{ row }">
-              <span class="text-error">{{ formatCurrency(row.original.stats.totalOutgoing) }}</span>
-            </template>
-            <template #net-cell="{ row }">
-              <span :class="row.original.stats.net >= 0 ? 'text-success' : 'text-error'">
-                {{ formatCurrency(row.original.stats.net) }}
-              </span>
-            </template>
-            <template #count-cell="{ row }">
-              {{ formatNumber(row.original.stats.transactionCount) }}
-            </template>
-            <template #actions-cell="{ row }">
-              <UButton
-                icon="i-lucide-arrow-right"
-                variant="ghost"
-                size="xs"
-                @click.stop="navigateTo(`/assets/${row.original.id}`)"
-              />
-            </template>
-          </UTable>
+          <div class="overflow-x-auto">
+            <UTable
+              :columns="assetColumns"
+              :data="assets"
+              :loading="aLoading"
+            >
+              <template #symbol-cell="{ row }">
+                <span class="font-mono font-medium">{{ row.original.symbol }}</span>
+              </template>
+              <template #name-cell="{ row }">
+                {{ row.original.name }}
+              </template>
+              <template #assetClass-cell="{ row }">
+                <UBadge
+                  :label="row.original.assetClass"
+                  variant="subtle"
+                  size="sm"
+                />
+              </template>
+              <template #income-cell="{ row }">
+                <span class="text-success">{{ formatCurrency(row.original.stats.totalIncome) }}</span>
+              </template>
+              <template #outgoing-cell="{ row }">
+                <span class="text-error">{{ formatCurrency(row.original.stats.totalOutgoing) }}</span>
+              </template>
+              <template #net-cell="{ row }">
+                <span :class="row.original.stats.net >= 0 ? 'text-success' : 'text-error'">
+                  {{ formatCurrency(row.original.stats.net) }}
+                </span>
+              </template>
+              <template #count-cell="{ row }">
+                {{ formatNumber(row.original.stats.transactionCount) }}
+              </template>
+              <template #actions-cell="{ row }">
+                <UButton
+                  icon="i-lucide-arrow-right"
+                  variant="ghost"
+                  size="xs"
+                  @click.stop="navigateTo(`/assets/${row.original.id}`)"
+                />
+              </template>
+            </UTable>
+          </div>
           <UPagination
             v-if="aTotalPages > 1"
             :page="aPage + 1"
